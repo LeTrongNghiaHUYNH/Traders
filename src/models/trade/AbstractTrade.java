@@ -22,7 +22,7 @@ public abstract class AbstractTrade
     /**
      * The current transaction time
      */
-    private Date _datetime;
+    protected Date _datetime;
     /**
      * The current transaction owner
      */
@@ -52,23 +52,6 @@ public abstract class AbstractTrade
     }
 
     /**
-     * Enable to know what kind of transaction the current transaction is
-     * @return the type of transaction
-     */
-    private String getTransactionType()
-    {
-        if (this instanceof Ask) {
-            return "Buy";
-        }
-
-        if (this instanceof Bid) {
-            return "Sell";
-        }
-
-        return "";
-    }
-
-    /**
      * Get the transaction ID
      * @return the current transaction ID
      */
@@ -78,17 +61,7 @@ public abstract class AbstractTrade
     }
 
     @Override
-    public String toString()
-    {
-        SimpleDateFormat df = new SimpleDateFormat("yyyy.MM.dd [hh:mm:ss]");
-        return String.format("%s | (%s) %s > %s %d %.2f",
-                df.format(this._datetime),
-                this._owner.getName(),
-                this.getTransactionType(),
-                this._item,
-                this._quantity,
-                this._price);
-    }
+    public abstract String toString();
 
     /**
      * Get the last transaction ID

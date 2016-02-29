@@ -16,6 +16,7 @@ public class User
      * The current user id
      */
     private long _id;
+
     /**
      * The current user name
      */
@@ -73,6 +74,21 @@ public class User
     public void setSocket(Socket socket)
     {
         this._socket = socket;
+    }
+
+    /**
+     * Provide a string formatted as following :
+     * [127.0.0.1:22503] Warlof 666
+     * @return [userAddress:userPort] username userid
+     */
+    @Override
+    public String toString()
+    {
+        return String.format("[%s:%d] %s (%d)",
+                this._socket.getInetAddress(),
+                this._socket.getPort(),
+                this._name,
+                this._id);
     }
 
     /**
