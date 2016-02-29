@@ -5,9 +5,11 @@ import models.user.User;
 /**
  * Created by warlof on 29/02/2016.
  */
-public class Bid extends AbstractTrade {
+public class Bid extends AbstractTrade
+{
 
-    public Bid(User user, String item, int quantity, double price){
+    public Bid(User user, String item, int quantity, double price)
+    {
         super();
         this._owner = user;
         this._item = item;

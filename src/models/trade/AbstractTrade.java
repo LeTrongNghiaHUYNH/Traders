@@ -2,10 +2,14 @@ package models.trade;
 
 import models.user.User;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by warlof on 29/02/2016.
  */
-public abstract class AbstractTrade {
+public abstract class AbstractTrade
+{
     /**
      * The ID is defined statically, so be able to keep a track of each transaction
      */
@@ -15,6 +19,10 @@ public abstract class AbstractTrade {
      * The current transaction id
      */
     private long _id;
+    /**
+     * The current transaction time
+     */
+    private Date _datetime;
     /**
      * The current transaction owner
      */
@@ -32,8 +40,11 @@ public abstract class AbstractTrade {
      */
     protected double _price;
 
-    protected AbstractTrade(){
+    protected AbstractTrade()
+    {
         this._id = ++AbstractTrade.ID;
+        this._datetime = new Date();
+
         this._owner = new User();
         this._item = "";
         this._quantity = 0;
@@ -44,15 +55,30 @@ public abstract class AbstractTrade {
      * Get the transaction ID
      * @return the current transaction ID
      */
-    public long getId(){
+    public long getId()
+    {
         return this._id;
+    }
+
+    @Override
+    public String toString()
+    {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy.MM.dd [hh:mm:ss]");
+        return String.format("%s | (%s) %s > %s %d %f",
+                df.format(this._datetime),
+                this._owner.getName(),
+                "WTS|WTB",
+                this._item,
+                this._quantity,
+                this._price);
     }
 
     /**
      * Get the last transaction ID
      * @return the last transaction ID which has been affected
      */
-    public static long getLastId(){
+    public static long getLastId()
+    {
         return AbstractTrade.ID;
     }
 
@@ -60,7 +86,8 @@ public abstract class AbstractTrade {
      * Get the next transaction ID
      * @return the next transaction ID which will be affected
      */
-    public static long getNextId(){
+    public static long getNextId()
+    {
         return (AbstractTrade.ID + 1);
     }
 }
