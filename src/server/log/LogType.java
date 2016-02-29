@@ -7,5 +7,6 @@ public enum LogType {
     notice,
     warning,
     error,
+    normal,
     debug
 }

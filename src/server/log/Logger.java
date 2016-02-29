@@ -51,34 +51,43 @@ public class Logger {
         // Add an hook on shutdown event in order to move the file
         // Work even if the application's crashing or anything else is happening
         // ie: Exception or ^C
+        if (Files.exists(this._file.toPath())) {
+            moveLogFile();
+        }
+
         Runtime.getRuntime().addShutdownHook(new Thread(){
             @Override
             public void run(){
-                if (_file.canWrite()) {
-                    try {
-                        // get current log attribute in order to take back its creation date
-                        BasicFileAttributes attr = Files.readAttributes(_file.toPath(), BasicFileAttributes.class);
-                        DateFormat df = new SimpleDateFormat("yyyyMMdd_hhmmss");
-
-                        // prepare the new filename
-                        String filepath = String.format("./logs/%s_%s.log",
-                                _file.getName().substring(0, _file.getName().lastIndexOf(".")),
-                                df.format(attr.creationTime().toMillis()));
-                        File newFile = new File(filepath);
-
-                        // rename the file
-                        Files.move(_file.toPath(), newFile.toPath());
-                    } catch (IOException e) {
-                        String errorMsg = String.format("Does the user %s has write permission on file %s",
-                                System.getProperty("user.name"),
-                                _file.getAbsolutePath());
-
-                        System.out.println("Unable to move the log file");
-                        System.out.println(errorMsg);
-                    }
-                }
+                moveLogFile();
             }
         });
+    }
+
+    private void moveLogFile()
+    {
+        if (_file.canWrite()) {
+            try {
+                // get current log attribute in order to take back its creation date
+                BasicFileAttributes attr = Files.readAttributes(_file.toPath(), BasicFileAttributes.class);
+                DateFormat df = new SimpleDateFormat("yyyyMMdd_hhmmss");
+
+                // prepare the new filename
+                String filepath = String.format("./logs/%s_%s.log",
+                        _file.getName().substring(0, _file.getName().lastIndexOf(".")),
+                        df.format(attr.creationTime().toMillis()));
+                File newFile = new File(filepath);
+
+                // rename the file
+                Files.move(_file.toPath(), newFile.toPath());
+            } catch (IOException e) {
+                String errorMsg = String.format("Does the user %s has write permission on file %s",
+                        System.getProperty("user.name"),
+                        _file.getAbsolutePath());
+
+                System.out.println("Unable to move the log file");
+                System.out.println(errorMsg);
+            }
+        }
     }
 
     /**
@@ -112,6 +121,20 @@ public class Logger {
             // write the message into the file
             output.append(message + "\r\n");
             output.close();
+
+            switch (type){
+                case error:
+                    System.out.println("[" + ColorShell.red(type.toString()) + "] " + message);
+                    break;
+                case notice:
+                    System.out.println("[" + ColorShell.blue(type.toString()) + "] " + message);
+                    break;
+                case warning:
+                    System.out.println("[" + ColorShell.yellow(type.toString()) + "] " + message);
+                    break;
+                default:
+                    System.out.println("[" + type.toString() + "] " + message);
+            }
         } catch (IOException e) {
             String errorMsg = String.format("Does the user %s has write permission on file %s",
                     System.getProperty("user.name"),

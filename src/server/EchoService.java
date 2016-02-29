@@ -8,6 +8,8 @@ import java.net.Socket;
 import models.trade.Ask;
 import models.trade.Bid;
 import models.user.User;
+import server.log.LogType;
+import server.log.Logger;
 
 public class EchoService extends Thread {
 	
@@ -31,8 +33,8 @@ public class EchoService extends Thread {
 		
 		BufferedReader fromClient;
 		DataOutputStream toClient;
-		
-		System.out.println("Thread started: " + this);
+
+        Logger.write(LogType.notice, "Thread started: " + this);
 		
 		try {
 			fromClient = new BufferedReader(new InputStreamReader(user.getSocket().getInputStream()));
@@ -66,7 +68,7 @@ public class EchoService extends Thread {
 			
 			fromClient.close();
 		} catch (Exception e) {
-			System.out.println(e);
+			Logger.write(LogType.error, e.toString());
 		}
 	}
 }
