@@ -45,10 +45,27 @@ public abstract class AbstractTrade
         this._id = ++AbstractTrade.ID;
         this._datetime = new Date();
 
-        this._owner = new User();
+        this._owner = new User(null);
         this._item = "";
         this._quantity = 0;
         this._price = 0.0;
+    }
+
+    /**
+     * Enable to know what kind of transaction the current transaction is
+     * @return the type of transaction
+     */
+    private String getTransactionType()
+    {
+        if (this instanceof Ask) {
+            return "Buy";
+        }
+
+        if (this instanceof Bid) {
+            return "Sell";
+        }
+
+        return "";
     }
 
     /**
@@ -64,10 +81,10 @@ public abstract class AbstractTrade
     public String toString()
     {
         SimpleDateFormat df = new SimpleDateFormat("yyyy.MM.dd [hh:mm:ss]");
-        return String.format("%s | (%s) %s > %s %d %f",
+        return String.format("%s | (%s) %s > %s %d %.2f",
                 df.format(this._datetime),
                 this._owner.getName(),
-                "WTS|WTB",
+                this.getTransactionType(),
                 this._item,
                 this._quantity,
                 this._price);
