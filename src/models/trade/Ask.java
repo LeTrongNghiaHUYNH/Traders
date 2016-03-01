@@ -1,7 +1,6 @@
 package models.trade;
 
 import models.user.User;
-
 import java.text.SimpleDateFormat;
 import java.util.Hashtable;
 
@@ -35,14 +34,7 @@ public class Ask extends AbstractTransaction
     @Override
     public String toString()
     {
-        SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd [hh:mm:ss]");
-        return String.format("%s | [%s] (%s) > %s %d %.2f",
-                df.format(this._datetime),
-                "SELL",
-                this._owner.getName(),
-                this._item,
-                this._quantity,
-                this._price);
+        return "[SELL] " + super.toString();
     }
 
     public static double getLowestOffer(String item)
