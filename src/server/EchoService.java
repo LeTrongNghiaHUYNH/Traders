@@ -38,6 +38,7 @@ public class EchoService extends Thread {
 		
 		try {
 			fromClient = new BufferedReader(new InputStreamReader(user.getSocket().getInputStream()));
+			toClient = new DataOutputStream(user.getSocket().getOutputStream());
 
 			while (connected) {
 				line = fromClient.readLine();
@@ -54,10 +55,16 @@ public class EchoService extends Thread {
 							quantity = Integer.parseInt(data[2]);
 							price = Double.parseDouble(data[3]);
 							
-							if (type.equals("BUY")) {
-								Server.asks.add(new Ask(user, item, quantity, price));
-							} else { // sell
-								Server.bids.add(new Bid(user, item, quantity, price));
+							if (type.equals("SELL")) {
+								Ask ask = new Ask(user, item, quantity, price);
+								Server.asks.add(ask);
+								Logger.write(LogType.notice, ask.toString());
+								toClient.writeBytes("Received: " + ask.toString());
+							} else { // BUY
+								Bid bid = new Bid(user, item, quantity, price);
+								Server.bids.add(bid);
+								Logger.write(LogType.notice, bid.toString());
+								toClient.writeBytes("Received: " + bid.toString());
 							}
 						} else {
 							// error
