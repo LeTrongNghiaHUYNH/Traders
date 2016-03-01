@@ -10,7 +10,9 @@ import java.util.Hashtable;
  */
 public class Bid extends AbstractTransaction
 {
-
+    /**
+     * Store the highest offer for a specific share codename
+     */
     private static Hashtable<String, Double> HIGHESTOFFER = new Hashtable<String, Double>();
 
     public Bid(User user, String item, int quantity, double price)
@@ -38,6 +40,11 @@ public class Bid extends AbstractTransaction
         return "[BUY] " + super.toString();
     }
 
+    /**
+     * Return the highest recorded amount for a specified share codename
+     * @param item The share codename
+     * @return The last recorded amount
+     */
     public static double getHighestOffer(String item)
     {
         if (Bid.HIGHESTOFFER.containsKey(item)) {
