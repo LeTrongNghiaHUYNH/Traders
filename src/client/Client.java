@@ -10,17 +10,16 @@ public class Client {
 	protected User user;
 	
 	private static String line;
-	private static Socket socket;
 	private static BufferedReader fromServer;
 	private static DataOutputStream toServer;
 	private static BufferedReader stdIn;
 	
 	public Client() throws UnknownHostException, IOException {
-		user = new User(new Socket("localhost", 9999));
+		user = new User(new Socket("localhost", 9495));
 	}	
 	
 	public Client(String name) throws UnknownHostException, IOException {
-		user = new User(new Socket("localhost", 9999), name);
+		user = new User(new Socket("localhost", 9495), name);
 	}
 	
 	public Client(String url, int port) throws UnknownHostException, IOException {
@@ -31,6 +30,14 @@ public class Client {
 		user = new User(new Socket(url, port), name);
 	}
 
+	 public static void main(String[] args) throws Exception {
+		 Client client = new Client();
+		 client.init();
+		 client.start();
+		 client.stop();
+	 }
+	
+	
 	public void init() throws UnknownHostException, IOException {
 	    toServer = new DataOutputStream( user.getSocket().getOutputStream() );
 	    fromServer = new BufferedReader( new InputStreamReader(user.getSocket().getInputStream()) );
