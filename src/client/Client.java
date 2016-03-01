@@ -63,6 +63,7 @@ public class Client {
 		toServer.writeBytes( line + '\n' );
 		if (line.equals(".")) {              // Does the user want to end the session?
 			holdTheLine = false;
+			System.out.print("Session closed.");
 		}
 		return holdTheLine;
 	}
