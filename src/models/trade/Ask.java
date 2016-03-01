@@ -12,7 +12,7 @@ public class Ask extends AbstractTransaction
     /**
      * Store the lowest offer for a specific share codename
      */
-    private static Hashtable<String, Double> LOWESTOFFER = new Hashtable<String, Double>();
+    private static Hashtable<String, Ask> LOWESTOFFER = new Hashtable<String, Ask>();
 
     public Ask(User user, String item, int quantity, double price)
     {
@@ -25,11 +25,11 @@ public class Ask extends AbstractTransaction
         // Then we compared both recorded price and provided price
         // Finally, we update the price if it's suitable
         if (Ask.LOWESTOFFER.containsKey(this._item)) {
-            if (this._price < Ask.LOWESTOFFER.get(this._item)) {
-                Ask.LOWESTOFFER.put(this._item, this._price);
+            if (this._price < Ask.LOWESTOFFER.get(this._item)._price) {
+                Ask.LOWESTOFFER.put(this._item, this);
             }
         } else {
-            Ask.LOWESTOFFER.put(this._item, this._price);
+            Ask.LOWESTOFFER.put(this._item, this);
         }
     }
 
@@ -49,13 +49,13 @@ public class Ask extends AbstractTransaction
      * @param item The share codename
      * @return The last recorded amount
      */
-    public static double getLowestOffer(String item)
+    public static Ask getLowestOffer(String item)
     {
         if (Ask.LOWESTOFFER.containsKey(item)) {
             return Ask.LOWESTOFFER.get(item);
         }
 
-        return 0.0;
+        return null;
     }
 
 }

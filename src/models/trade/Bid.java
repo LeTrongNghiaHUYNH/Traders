@@ -13,7 +13,7 @@ public class Bid extends AbstractTransaction
     /**
      * Store the highest offer for a specific share codename
      */
-    private static Hashtable<String, Double> HIGHESTOFFER = new Hashtable<String, Double>();
+    private static Hashtable<String, Bid> HIGHESTOFFER = new Hashtable<String, Bid>();
 
     public Bid(User user, String item, int quantity, double price)
     {
@@ -21,11 +21,11 @@ public class Bid extends AbstractTransaction
         this._owner = user;
 
         if (Bid.HIGHESTOFFER.containsKey(this._item)) {
-            if (this._price > Bid.HIGHESTOFFER.get(this._item)) {
-                Bid.HIGHESTOFFER.put(this._item, this._price);
+            if (this._price > Bid.HIGHESTOFFER.get(this._item)._price) {
+                Bid.HIGHESTOFFER.put(this._item, this);
             }
         } else {
-            Bid.HIGHESTOFFER.put(this._item, this._price);
+            Bid.HIGHESTOFFER.put(this._item, this);
         }
     }
 
@@ -45,12 +45,12 @@ public class Bid extends AbstractTransaction
      * @param item The share codename
      * @return The last recorded amount
      */
-    public static double getHighestOffer(String item)
+    public static Bid getHighestOffer(String item)
     {
         if (Bid.HIGHESTOFFER.containsKey(item)) {
             return Bid.HIGHESTOFFER.get(item);
         }
 
-        return 0.0;
+        return null;
     }
 }
