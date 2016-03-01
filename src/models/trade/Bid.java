@@ -15,11 +15,8 @@ public class Bid extends AbstractTransaction
 
     public Bid(User user, String item, int quantity, double price)
     {
-        super();
+        super(item, quantity, price);
         this._owner = user;
-        this._item = item;
-        this._quantity = quantity;
-        this._price = price;
 
         if (Bid.HIGHESTOFFER.containsKey(this._item)) {
             if (this._price > Bid.HIGHESTOFFER.get(this._item)) {

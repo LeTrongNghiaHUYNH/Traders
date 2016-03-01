@@ -15,11 +15,8 @@ public class Ask extends AbstractTransaction
 
     public Ask(User user, String item, int quantity, double price)
     {
-        super();
+        super(item, quantity, price);
         this._owner = user;
-        this._item = item;
-        this._quantity = quantity;
-        this._price = price;
 
         if (Ask.LOWESTOFFER.containsKey(this._item)) {
             if (this._price < Ask.LOWESTOFFER.get(this._item)) {

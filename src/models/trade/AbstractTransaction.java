@@ -38,15 +38,15 @@ public abstract class AbstractTransaction implements Comparable
      */
     protected double _price;
 
-    protected AbstractTransaction()
+    protected AbstractTransaction(String item, int quantity, double price)
     {
         this._id = ++AbstractTransaction.ID;
         this._datetime = new Date();
 
         this._owner = new User(null);
-        this._item = "";
-        this._quantity = 0;
-        this._price = 0.0;
+        this._item = item;
+        this._quantity = quantity;
+        this._price = price;
     }
 
     /**
@@ -58,6 +58,38 @@ public abstract class AbstractTransaction implements Comparable
         return this._id;
     }
 
+    /**
+     * Get the transaction quantity
+     * @return the current transaction item quantity buy or sell
+     */
+    public int getQuantity()
+    {
+        return this._quantity;
+    }
+
+    /**
+     * Get the transaction price
+     * @return the current transaction price per item
+     */
+    public double getPrice()
+    {
+        return this._price;
+    }
+
+    /**
+     * Get the transaction creation time
+     * @return the time when the current transaction has been created
+     */
+    public Date getDateTime()
+    {
+        return this._datetime;
+    }
+
+    /**
+     * Provide a way to compare transaction between them based on their price
+     * @param transaction The transaction to compare with the current one
+     * @return 1: The current transaction is less important | -1 : The transaction is more important | 0 : Both transactions are same
+     */
     @Override
     public int compareTo(Object transaction) {
         if (this._price > ((AbstractTransaction) transaction)._price) {
