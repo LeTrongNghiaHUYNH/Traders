@@ -35,14 +35,7 @@ public class Bid extends AbstractTransaction
     @Override
     public String toString()
     {
-        SimpleDateFormat df = new SimpleDateFormat("yyyy.MM.dd [hh:mm:ss]");
-        return String.format("%s | [%s] (%s) > %s %d %.2f",
-                df.format(this._datetime),
-                this._owner.getName(),
-                "BUY",
-                this._item,
-                this._quantity,
-                this._price);
+        return "[BUY] " + super.toString();
     }
 
     public static double getHighestOffer(String item)

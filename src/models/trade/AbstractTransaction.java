@@ -102,7 +102,14 @@ public abstract class AbstractTransaction implements Comparable
     }
 
     @Override
-    public abstract String toString();
+    public String toString()
+    {
+        return String.format("(%s) > %s %d %.2f",
+                this._owner.getName(),
+                this._item,
+                this._quantity,
+                this._price);
+    }
 
     /**
      * Get the last transaction ID
