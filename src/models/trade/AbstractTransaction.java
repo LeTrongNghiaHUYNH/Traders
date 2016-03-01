@@ -1,14 +1,12 @@
 package models.trade;
 
 import models.user.User;
-
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
  * Created by warlof on 29/02/2016.
  */
-public abstract class AbstractTrade
+public abstract class AbstractTransaction implements Comparable
 {
     /**
      * The ID is defined statically, so be able to keep a track of each transaction
@@ -40,9 +38,9 @@ public abstract class AbstractTrade
      */
     protected double _price;
 
-    protected AbstractTrade()
+    protected AbstractTransaction()
     {
-        this._id = ++AbstractTrade.ID;
+        this._id = ++AbstractTransaction.ID;
         this._datetime = new Date();
 
         this._owner = new User(null);
@@ -61,6 +59,17 @@ public abstract class AbstractTrade
     }
 
     @Override
+    public int compareTo(Object transaction) {
+        if (this._price > ((AbstractTransaction) transaction)._price) {
+            return 1;
+        }else if (this._price < ((AbstractTransaction) transaction)._price) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
     public abstract String toString();
 
     /**
@@ -69,7 +78,7 @@ public abstract class AbstractTrade
      */
     public static long getLastId()
     {
-        return AbstractTrade.ID;
+        return AbstractTransaction.ID;
     }
 
     /**
@@ -78,6 +87,6 @@ public abstract class AbstractTrade
      */
     public static long getNextId()
     {
-        return (AbstractTrade.ID + 1);
+        return (AbstractTransaction.ID + 1);
     }
 }
