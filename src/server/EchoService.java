@@ -47,10 +47,11 @@ public class EchoService extends Thread {
 				} else {
 					data = line.split(" ");
 					if (data.length != 4) {
-						System.out.println("pb data");
-					} else {						
-						if (data[0].equals("BUY") || data[0].equals("SELL")) {
-							type = data[0];
+						Logger.write(LogType.error, "There is no enough argument.");
+						toClient.writeBytes("There is no enough argument.\n");
+					} else {
+						type = data[0].toUpperCase();
+						if (type.equals("BUY") || type.equals("SELL")) {
 							item = data[1];
 							quantity = Integer.parseInt(data[2]);
 							price = Double.parseDouble(data[3]);
@@ -59,15 +60,16 @@ public class EchoService extends Thread {
 								Ask ask = new Ask(user, item, quantity, price);
 								Server.asks.add(ask);
 								Logger.write(LogType.notice, ask.toString());
-								toClient.writeBytes("Received: " + ask.toString());
+								toClient.writeBytes("Received: " + ask.toString() + '\n');
 							} else { // BUY
 								Bid bid = new Bid(user, item, quantity, price);
 								Server.bids.add(bid);
 								Logger.write(LogType.notice, bid.toString());
-								toClient.writeBytes("Received: " + bid.toString());
+								toClient.writeBytes("Received: " + bid.toString() + '\n');
 							}
 						} else {
-							// error
+							Logger.write(LogType.error, "It's not a BUY or SELL command.");
+							toClient.writeBytes("It's not a BUY or SELL command.\n");
 						}
 					}
 				}
