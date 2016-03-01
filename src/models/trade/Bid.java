@@ -3,6 +3,7 @@ package models.trade;
 import models.user.User;
 
 import java.text.SimpleDateFormat;
+import java.util.Hashtable;
 
 /**
  * Created by warlof on 29/02/2016.
@@ -10,7 +11,7 @@ import java.text.SimpleDateFormat;
 public class Bid extends AbstractTransaction
 {
 
-    private static double HIGHESTOFFER = 0.0;
+    private static Hashtable<String, Double> HIGHESTOFFER = new Hashtable<String, Double>();
 
     public Bid(User user, String item, int quantity, double price)
     {
@@ -20,8 +21,12 @@ public class Bid extends AbstractTransaction
         this._quantity = quantity;
         this._price = price;
 
-        if (this._price > Bid.HIGHESTOFFER) {
-            Bid.HIGHESTOFFER = this._price;
+        if (Bid.HIGHESTOFFER.containsKey(this._item)) {
+            if (this._price > Bid.HIGHESTOFFER.get(this._item)) {
+                Bid.HIGHESTOFFER.put(this._item, this._price);
+            }
+        } else {
+            Bid.HIGHESTOFFER.put(this._item, this._price);
         }
     }
 
@@ -43,8 +48,12 @@ public class Bid extends AbstractTransaction
                 this._price);
     }
 
-    public static double getHighestOffer()
+    public static double getHighestOffer(String item)
     {
-        return Bid.HIGHESTOFFER;
+        if (Bid.HIGHESTOFFER.containsKey(item)) {
+            return Bid.HIGHESTOFFER.get(item);
+        }
+
+        return 0.0;
     }
 }
