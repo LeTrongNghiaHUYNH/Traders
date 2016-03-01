@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Hashtable;
 
 /**
@@ -118,8 +119,14 @@ public class Logger {
         try {
             // prepare a buffer in order to write the message inside the attached file
             Writer output = new BufferedWriter(new FileWriter(Logger.getInstance(type)._file, true));
+            // prepare a datetime string
+            DateFormat df = new SimpleDateFormat("dd/MMM/yyyy:hh:mm:ss Z");
+            // prepare the message as it should be wrote in the log file
+            String logMessage = String.format("[%s] %s",
+                    df.format(System.currentTimeMillis()),
+                    message);
             // write the message into the file
-            output.append(message + "\r\n");
+            output.append(logMessage + "\r\n");
             output.close();
 
             switch (type){
