@@ -19,9 +19,9 @@ public class Server {
 	static String stocks[] = {"AAPL", "IBM", "MSFT", "ORCL"};
 	
 	public static void main(String[] args) throws Exception {
-		asks = new ArrayList<>();
-		bids = new ArrayList<>();
-		users = new ArrayList<>();
+		asks = new ArrayList();
+		bids = new ArrayList();
+		users = new ArrayList();
 		int port = 9495;
 		ServerSocket listenSocket = new ServerSocket(port);
 		Logger.write(LogType.notice, "Multithreaded Server starts on Port " + port);
