@@ -128,4 +128,12 @@ public abstract class AbstractTransaction implements Comparable
     {
         return (AbstractTransaction.ID + 1);
     }
+    
+    /**
+     * Decrease the current quantity of nb
+     * @param nb
+     */
+    public void decreaseQuantity(int nb) {
+    	this._quantity -= nb;
+    }
 }
