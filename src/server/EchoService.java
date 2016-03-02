@@ -67,6 +67,25 @@ public class EchoService extends Thread {
 								Logger.write(LogType.notice, bid.toString());
 								toClient.writeBytes("Received: " + bid.toString() + '\n');
 							}
+							
+							Bid bid = Bid.getHighestOffer(item);
+							Ask ask = Ask.getLowestOffer(item);
+							if (bid != null && ask != null && bid.getPrice() >= ask.getPrice()) {								
+								int minQuantity = Math.min(bid.getQuantity(), ask.getQuantity());
+								
+								bid.decreaseQuantity(minQuantity);
+								ask.decreaseQuantity(minQuantity);
+								
+								if (bid.getQuantity() <= 0) {
+									Server.bids.remove(bid);
+									Logger.write(LogType.notice, "Removed: " + bid.toString());
+								}
+								
+								if (ask.getQuantity() <= 0) {
+									Server.asks.remove(ask);
+									Logger.write(LogType.notice, "Removed: " + ask.toString());
+								}
+							}
 						} else {
 							Logger.write(LogType.error, "It's not a BUY or SELL command.");
 							toClient.writeBytes("It's not a BUY or SELL command.\n");
