@@ -12,13 +12,11 @@ public class XRPCDefinition {
     }
 
     public Double get(String stock) {
-        for (String s : Server.stocks) {
-            if (s.equals(stock)) {
-                return 33.4;
-            }
+        if (Server.isStockExists(stock)) {
+            return 33.4;
+        } else {
+            return 0.0;
         }
-
-        return 0.0;
     }
 
 }

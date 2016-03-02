@@ -37,22 +37,22 @@ public class Server {
         while (true);
     }
     
-    public static void addAsk(User user, String item, int quantity, double price) {
+    public static void addAsk(User user, Stock item, int quantity, double price) {
     	Ask ask = new Ask(user, item, quantity, price);
     	asks.add(ask);
     	Logger.write(LogType.notice, ask.toString());
     }
     
-    public static void addBid(User user, String item, int quantity, double price) {
+    public static void addBid(User user, Stock item, int quantity, double price) {
     	Bid bid = new Bid(user, item, quantity, price);
     	bids.add(bid);
     	Logger.write(LogType.notice, bid.toString());
     }
     
-    public static boolean isMatched(String item) {
+    public static boolean isMatched(Stock item) {
     	Bid highestBid = null;
     	for (Bid bid : bids) {
-    		if (bid.getItem().equals(item)) {
+    		if (bid.getItem() == item) {
     			if (highestBid == null || bid.getPrice() > highestBid.getPrice()) {
     				highestBid = bid;
     			}
@@ -61,7 +61,7 @@ public class Server {
     	
     	Ask lowestAsk = null;
     	for (Ask ask : asks) {
-    		if (ask.getItem().equals(item)) {
+    		if (ask.getItem() == item) {
     			if (lowestAsk == null || ask.getPrice() < lowestAsk.getPrice()) {
     				lowestAsk = ask;
     			}

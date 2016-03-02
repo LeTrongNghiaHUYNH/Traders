@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 import models.trade.Ask;
 import models.trade.Bid;
+import models.trade.Stock;
 import models.user.User;
 import server.Server;
 import server.log.LogType;
@@ -26,7 +27,7 @@ public class AppService extends Thread {
 		String line;
 		String[] data;
 		String type;
-		String item;
+		Stock item;
 		int quantity;
 		double price;
 		
@@ -81,9 +82,9 @@ public class AppService extends Thread {
 					} else {
 						type = data[0].toUpperCase();
 						if (type.equals("BUY") || type.equals("SELL")) {
-							item = data[1];
-							
-							if (Arrays.asList(Server.stocks).contains(item)) {
+
+							if (Server.isStockExists(data[1])) {
+                                item = Stock.valueOf(data[1]);
 								quantity = Integer.parseInt(data[2]);
 								price = Double.parseDouble(data[3]);
 								

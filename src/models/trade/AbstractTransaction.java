@@ -31,7 +31,7 @@ public abstract class AbstractTransaction implements Comparable
     /**
      * The item about which the transaction is related
      */
-    protected String _item;
+    protected Stock _item;
     /**
      * The amount of item which are concerned by the transaction
      */
@@ -41,7 +41,7 @@ public abstract class AbstractTransaction implements Comparable
      */
     protected double _price;
 
-    protected AbstractTransaction(String item, int quantity, double price)
+    protected AbstractTransaction(Stock item, int quantity, double price)
     {
         this._id = ++AbstractTransaction.ID;
         this._datetime = new Date();
@@ -92,7 +92,7 @@ public abstract class AbstractTransaction implements Comparable
      * Get the item
      * @return the name of the item like MSFT AAPL etc
      */
-    public String getItem() {
+    public Stock getItem() {
     	return this._item;
     }
 
