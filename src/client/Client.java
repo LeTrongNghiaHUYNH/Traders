@@ -2,7 +2,10 @@ package client;
 
 import java.io.*;
 import java.net.*;
+import java.util.Locale;
+import java.util.Random;
 
+import models.trade.Stock;
 import models.user.User;
 
 public class Client {
@@ -46,7 +49,7 @@ public class Client {
 	
 	public void start() throws IOException {
 		while (sendRequest()) {              // Send requests while connected
-			receiveResponse();                 // Process server's answer
+			receiveResponse();               // Process server's answer
 		}
 	}
 	
@@ -60,18 +63,69 @@ public class Client {
 		boolean holdTheLine = true;          // Connection exists
 		System.out.print("Enter message for the Server, or end the session with . : ");
 		line = stdIn.readLine();
-		toServer.writeBytes( line + '\n' );
 		if (line.equals(".")) {              // Does the user want to end the session?
 			holdTheLine = false;
-			System.out.print("Session closed.");
-		}
+			System.out.println("Session closed.");
+		} else if (line.equals("bot")) {
+            System.out.println("The client is becoming a nolife trader");
+            while(true) {
+                bot();
+            }
+        } else {
+            toServer.writeBytes( line + '\n' );
+        }
 		return holdTheLine;
 	}
 	
 	private static void receiveResponse() throws IOException {
 		System.out.println("Server answers: " + new String(fromServer.readLine()) );
 	}
-	
+
+    public static void bot() throws IOException
+    {
+        Random random = new Random();
+        int action = random.nextInt(2);
+        int stock = random.nextInt(4);
+        int quantity = random.nextInt(99999);
+        double price = random.nextDouble() * random.nextInt(999);
+        String sAction;
+        String sStock = "";
+
+        if (action == 1) {
+            sAction = "BUY";
+        } else {
+            sAction = "SELL";
+        }
+
+        switch (stock){
+            case 0:
+                sStock = Stock.AAPL.toString();
+                break;
+            case 1:
+                sStock = Stock.IBM.toString();
+                break;
+            case 2:
+                sStock = Stock.MSFT.toString();
+                break;
+            case 3:
+                sStock = Stock.ORCL.toString();
+                break;
+        }
+
+        line = String.format(Locale.ENGLISH, "%s %s %d %.2f",
+                sAction,
+                sStock,
+                quantity,
+                price);
+
+        toServer.writeBytes( line + '\n' );
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            System.out.println("The bot is becoming crazy ! " + e);
+        }
+    }
+
 	/** getters **/
 	public User getUser() {
 		return user;

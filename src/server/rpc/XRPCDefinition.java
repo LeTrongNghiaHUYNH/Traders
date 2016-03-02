@@ -1,5 +1,9 @@
 package server.rpc;
 
+import models.trade.Ask;
+import models.trade.Bid;
+import models.trade.Stock;
+import models.user.User;
 import server.Server;
 
 /**
@@ -7,16 +11,46 @@ import server.Server;
  */
 public class XRPCDefinition {
 
-    public Integer add(int x, int y) {
-        return new Integer(x+y);
+    public boolean ask(String username, String item, int qty, double price)
+    {
+        if (Server.isStockExists(item)) {
+            User user = new User(null, username);
+            Server.addAsk(user, Stock.valueOf(item), qty, price);
+
+            return true;
+        }
+
+        return false;
     }
 
-    public Double get(String stock) {
-        if (Server.isStockExists(stock)) {
-            return 33.4;
-        } else {
-            return 0.0;
+    public boolean bid(String username, String item, int qty, double price)
+    {
+        if (Server.isStockExists(item)) {
+            User user = new User(null, username);
+            Server.addBid(user, Stock.valueOf(item), qty, price);
+
+            return true;
         }
+
+        return false;
+    }
+
+    public Double[] get(String stock) {
+        double bid = 0.0;
+        double ask = 0.0;
+
+        if (Server.isStockExists(stock)) {
+
+            Stock stockEnum = Stock.valueOf(stock);
+
+            if (Bid.getHighestOffer(stockEnum) != null)
+                bid = Bid.getHighestOffer(stockEnum).getPrice();
+            if (Ask.getLowestOffer(stockEnum) != null)
+                ask = Ask.getLowestOffer(stockEnum).getPrice();
+
+        }
+
+        return new Double[] {bid, ask};
     }
 
 }

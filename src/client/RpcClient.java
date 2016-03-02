@@ -14,17 +14,15 @@ public class RpcClient {
         XmlRpcClient client = new XmlRpcClient();
         client.setConfig(config);
 
-        Object[] params = new Object[]{new Integer(33), new Integer(9)};
-        System.out.println("About to get results...(params[0] = " + params[0]
-                + ", params[1] = " + params[1] + ")." );
+        Object[] param2 = new Object[]{new String("LLEUILLIOT"), new String("IBM"), new Integer(3), new Double(1.0)};
+        client.execute("Prices.ask", param2);
 
-        int result;
-        result = (Integer) client.execute("Prices.add", params);
-        System.out.println("Mul Result = " + result );
+        Object[] param3 = new Object[]{new String("LLEUILLIOT"), new String("IBM"), new Integer(3), new Double(55.0)};
+        client.execute("Prices.bid", param3);
 
-        Object[] param = new String[]{new String()};
-        double r = (Double) client.execute("Prices.get", param);
-        System.out.println("Stock = " + r);
+        Object[] param = new String[]{new String("IBM")};
+        Object[] r = (Object[]) client.execute("Prices.get", param);
+        System.out.println("Stock = " + (Double) r[0] + " and " + (Double) r[1]);
     }
 }
 
