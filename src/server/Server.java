@@ -4,13 +4,8 @@ import models.trade.Ask;
 import models.trade.Bid;
 import models.user.User;
 import server.app.AppServer;
-import server.app.AppService;
-import server.log.LogType;
-import server.log.Logger;
-import server.rpc.XmlRpcServer;
+import server.rpc.TraderXmlRpcServer;
 
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayList;
 
 /**
@@ -33,7 +28,7 @@ public class Server {
         users = new ArrayList();
 
         new AppServer(Server.appPort).start();
-        new XmlRpcServer(Server.rpcPort).start();
+        new TraderXmlRpcServer(Server.rpcPort).start();
 
         while (true);
     }
