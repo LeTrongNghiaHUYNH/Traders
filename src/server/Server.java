@@ -6,6 +6,8 @@ import models.trade.Stock;
 import models.user.User;
 
 import server.app.AppServer;
+import server.log.LogType;
+import server.log.Logger;
 import server.rpc.TraderXmlRpcServer;
 
 import java.util.ArrayList;
@@ -33,6 +35,57 @@ public class Server {
 
         // infinite loop in order to avoid the server termination
         while (true);
+    }
+    
+    public static void addAsk(User user, String item, int quantity, double price) {
+    	Ask ask = new Ask(user, item, quantity, price);
+    	asks.add(ask);
+    	Logger.write(LogType.notice, ask.toString());
+    }
+    
+    public static void addBid(User user, String item, int quantity, double price) {
+    	Bid bid = new Bid(user, item, quantity, price);
+    	bids.add(bid);
+    	Logger.write(LogType.notice, bid.toString());
+    }
+    
+    public static boolean isMatched(String item) {
+    	Bid highestBid = null;
+    	for (Bid bid : bids) {
+    		if (bid.getItem().equals(item)) {
+    			if (highestBid == null || bid.getPrice() > highestBid.getPrice()) {
+    				highestBid = bid;
+    			}
+    		}
+    	}
+    	
+    	Ask lowestAsk = null;
+    	for (Ask ask : asks) {
+    		if (ask.getItem().equals(item)) {
+    			if (lowestAsk == null || ask.getPrice() < lowestAsk.getPrice()) {
+    				lowestAsk = ask;
+    			}
+    		}
+    	}
+		
+		if (highestBid != null && lowestAsk != null && highestBid.getPrice() >= lowestAsk.getPrice()) {
+			int minQuantity = Math.min(highestBid.getQuantity(), lowestAsk.getQuantity());
+			
+			highestBid.decreaseQuantity(minQuantity);
+			lowestAsk.decreaseQuantity(minQuantity);
+			
+			if (highestBid.getQuantity() <= 0) {
+				Server.bids.remove(highestBid);
+				Logger.write(LogType.notice, "Removed: " + highestBid.toString());
+			}
+			
+			if (lowestAsk.getQuantity() <= 0) {
+				Server.asks.remove(lowestAsk);
+				Logger.write(LogType.notice, "Removed: " + lowestAsk.toString());
+			}
+			return true;
+		}
+		return false;
     }
 
     /**

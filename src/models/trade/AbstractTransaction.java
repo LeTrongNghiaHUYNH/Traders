@@ -87,6 +87,14 @@ public abstract class AbstractTransaction implements Comparable
     {
         return this._datetime;
     }
+    
+    /**
+     * Get the item
+     * @return the name of the item like MSFT AAPL etc
+     */
+    public String getItem() {
+    	return this._item;
+    }
 
     /**
      * Provide a way to compare transaction between them based on their price
