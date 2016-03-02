@@ -1,6 +1,9 @@
 package models.trade;
 
 import models.user.User;
+import server.log.LogType;
+import server.log.Logger;
+
 import java.util.Date;
 
 /**
@@ -101,14 +104,52 @@ public abstract class AbstractTransaction implements Comparable
         }
     }
 
+    /**
+     * Provide a string formatted as following :
+     * 2016/02/29 [18:35:07] | [BUY/SELL] (Warlof) > Apple 55 30.07
+     * @return year/month/day [hours:minutes:seconds] | [BUY] (username) > item quantity price
+     */
     @Override
     public String toString()
     {
-        return String.format("(%s) > %s %d %.2f",
-                this._owner.getName(),
-                this._item,
-                this._quantity,
-                this._price);
+        if (this instanceof Ask) {
+            return String.format("[SELL] (%s) > %s %d %.2f",
+                    this._owner.getName(),
+                    this._item,
+                    this._quantity,
+                    this._price);
+        } else if (this instanceof Bid) {
+            return String.format("[BUY] (%s) > %s %d %.2f",
+                    this._owner.getName(),
+                    this._item,
+                    this._quantity,
+                    this._price);
+        } else {
+            Logger.write(LogType.error, String.format("Unable to parse the object as String : unrecognized instance of %s",
+                    ((AbstractTransaction) this).getClass().getName()));
+            return "";
+        }
+    }
+
+    public String toCsv()
+    {
+        if (this instanceof Ask) {
+            return String.format("SELL,%s,%s,%d,%.2f",
+                    this._owner.getName(),
+                    this._item,
+                    this._quantity,
+                    this._price);
+        } else if (this instanceof Bid) {
+            return String.format("BUY,%s,%s,%d,%.2f",
+                    this._owner.getName(),
+                    this._item,
+                    this._quantity,
+                    this._price);
+        } else {
+            Logger.write(LogType.error, String.format("Unable to parse the object as CSV : unrecognized instance of %s",
+                    ((AbstractTransaction) this).getClass().getName()));
+            return "";
+        }
     }
 
     /**

@@ -34,20 +34,9 @@ public class Ask extends AbstractTransaction
     }
 
     /**
-     * Provide a string formatted as following :
-     * 2016/02/29 [18:35:07] | [SELL] (Warlof) > Apple 55 30.07
-     * @return year/month/day [hours:minutes:seconds] | [SELL] (username) > item quantity price
-     */
-    @Override
-    public String toString()
-    {
-        return "[SELL] " + super.toString();
-    }
-
-    /**
-     * Return the lowest amount recorded for the specified share codename
+     * Return the lowest record for the specified share codename
      * @param item The share codename
-     * @return The last recorded amount
+     * @return The lowest record
      */
     public static Ask getLowestOffer(String item)
     {

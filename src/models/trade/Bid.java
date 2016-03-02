@@ -30,20 +30,9 @@ public class Bid extends AbstractTransaction
     }
 
     /**
-     * Provide a string formatted as following :
-     * 2016/02/29 [18:35:07] | [BUY] (Warlof) > Apple 55 30.07
-     * @return year/month/day [hours:minutes:seconds] | [BUY] (username) > item quantity price
-     */
-    @Override
-    public String toString()
-    {
-        return "[BUY] " + super.toString();
-    }
-
-    /**
-     * Return the highest recorded amount for a specified share codename
+     * Return the highest record for a specified share codename
      * @param item The share codename
-     * @return The last recorded amount
+     * @return The highest record
      */
     public static Bid getHighestOffer(String item)
     {
