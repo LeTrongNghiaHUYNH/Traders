@@ -77,8 +77,19 @@ public class Client {
 		return holdTheLine;
 	}
 	
+	public static String contactServer(String request) throws IOException {         // Connection exists
+		String contact = "Send to server: '" + request + "'...\n";
+        toServer.writeBytes( request + '\n' );
+        contact += responseServer() + '\n';
+		return contact;
+	}
+
 	private static void receiveResponse() throws IOException {
 		System.out.println("Server answers: " + new String(fromServer.readLine()) );
+	}
+
+	private static String responseServer() throws IOException {
+		return "Recieve from server: " + new String(fromServer.readLine());
 	}
 
     public static void bot() throws IOException
