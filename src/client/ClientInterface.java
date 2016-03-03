@@ -25,8 +25,8 @@ public class ClientInterface extends JFrame implements ActionListener {
 	JPanel jp3 = new JPanel();
 
 	JLabel jlb1 = new JLabel("Stock:");
-	JLabel jlb2 = new JLabel("Quantité:");
-	JLabel jlb3 = new JLabel("Prix:");
+	JLabel jlb2 = new JLabel("Quantity:");
+	JLabel jlb3 = new JLabel("Price:");
 	JLabel jlb4 = new JLabel("Action:");
 
 	static JTextArea jta = new JTextArea(5,40);
@@ -35,7 +35,7 @@ public class ClientInterface extends JFrame implements ActionListener {
 	JRadioButton jrb1 = new JRadioButton("SELL");
 	JRadioButton jrb2 = new JRadioButton("BUY");
 	JButton jb = new JButton("GO!");
-
+	
 	JComboBox jcb = new JComboBox(Stock.values());
 	JScrollPane jsp = new JScrollPane( jta );
 	ButtonGroup bg = new ButtonGroup();
@@ -44,7 +44,6 @@ public class ClientInterface extends JFrame implements ActionListener {
 	public static void main(String[] args) throws UnknownHostException, IOException  {
 
 		JFrame jf = new ClientInterface("Client Interface");
-
 		String name = JOptionPane.showInputDialog(jf, "Username? (empty for anonymous)", "Client connection", JOptionPane.QUESTION_MESSAGE);
 
 		if(name.equals("")) {
@@ -67,9 +66,9 @@ public class ClientInterface extends JFrame implements ActionListener {
 				try {
 					jta.setText(jta.getText() + "Aplication is closing... \n");
 					jta.update(jta.getGraphics());
-					
+
 					client.stop();
-					
+
 					Thread.sleep(500);
 					System.exit(0);
 				} catch (IOException | InterruptedException e) {
@@ -122,7 +121,7 @@ public class ClientInterface extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == jb) {
 			String request = "";
-
+			
 			if(jrb1.isSelected()) {
 				request = "SELL ";
 			} else {

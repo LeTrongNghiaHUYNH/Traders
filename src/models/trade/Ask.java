@@ -16,7 +16,7 @@ public class Ask extends AbstractTransaction
 
     public Ask(User user, Stock item, int quantity, double price)
     {
-        super(item, quantity, price);
+        super(user.getName(), item, quantity, price);
         this._owner = user;
 
         // control if the price is a top price
