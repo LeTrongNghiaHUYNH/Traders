@@ -8,7 +8,7 @@ import java.util.Random;
 import models.trade.Stock;
 import models.user.User;
 
-public class Client {
+public class CliDummyClient {
 	
 	protected User user;
 	
@@ -17,24 +17,24 @@ public class Client {
 	private static DataOutputStream toServer;
 	private static BufferedReader stdIn;
 	
-	public Client() throws UnknownHostException, IOException {
+	public CliDummyClient() throws UnknownHostException, IOException {
 		user = new User(new Socket("localhost", 9495));
 	}	
 	
-	public Client(String name) throws UnknownHostException, IOException {
+	public CliDummyClient(String name) throws UnknownHostException, IOException {
 		user = new User(new Socket("localhost", 9495), name);
 	}
 	
-	public Client(String url, int port) throws UnknownHostException, IOException {
+	public CliDummyClient(String url, int port) throws UnknownHostException, IOException {
 		user = new User(new Socket(url, port));
 	}
 	
-	public Client(String url, int port, String name) throws UnknownHostException, IOException {
+	public CliDummyClient(String url, int port, String name) throws UnknownHostException, IOException {
 		user = new User(new Socket(url, port), name);
 	}
 
 	public static void main(String[] args) throws Exception {
-		Client client = new Client();
+		CliDummyClient client = new CliDummyClient();
 		client.init();
 		client.start();
 		client.stop();

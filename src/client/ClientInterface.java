@@ -15,7 +15,7 @@ public class ClientInterface extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 
-	private static Client client;
+	private static CliDummyClient cliDummyClient;
 
 	JPanel jp = new JPanel(new BorderLayout());
 	JPanel jp1 = new JPanel();
@@ -46,10 +46,10 @@ public class ClientInterface extends JFrame implements ActionListener {
 		String name = JOptionPane.showInputDialog(jf, "Username? (empty for anonymous)", "Client connection", JOptionPane.QUESTION_MESSAGE);
 
 		if(name.equals("")) {
-			client = new Client(name);
+			cliDummyClient = new CliDummyClient(name);
 			jta.setText("Connecting to server in anonymous mode ...\n");
 		} else {
-			client = new Client(name);
+			cliDummyClient = new CliDummyClient(name);
 			jta.setText("Connecting to server with username: " + name + "...\n");
 		}	
 		
@@ -66,7 +66,7 @@ public class ClientInterface extends JFrame implements ActionListener {
 					jta.setText(jta.getText() + "Aplication is closing... \n");
 					jta.update(jta.getGraphics());
 
-					client.stop();
+					cliDummyClient.stop();
 
 					Thread.sleep(500);
 					System.exit(0);
@@ -76,7 +76,7 @@ public class ClientInterface extends JFrame implements ActionListener {
 			}
 		});
 
-		client.init();
+		cliDummyClient.init();
 	}
 
 	public ClientInterface(String string) {
@@ -133,7 +133,7 @@ public class ClientInterface extends JFrame implements ActionListener {
 			request += jtf2.getText();
 
 			try {
-				String response = Client.contactServer(request);
+				String response = CliDummyClient.contactServer(request);
 				jta.setText(jta.getText() + response);
 			} catch (IOException e1) {
 				e1.printStackTrace();

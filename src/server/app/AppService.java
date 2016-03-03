@@ -63,7 +63,7 @@ public class AppService extends Thread {
 						if (type.equals("BUY") || type.equals("SELL")) {
 
 							if (Server.isStockExists(data[1])) {
-                                item = Stock.valueOf(data[1]);
+                                item = Stock.valueOf(data[1].toUpperCase());
 								quantity = Integer.parseInt(data[2]);
 								price = Double.parseDouble(data[3]);
 								

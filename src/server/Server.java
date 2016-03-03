@@ -8,7 +8,7 @@ import models.user.User;
 import server.app.AppServer;
 import server.log.LogType;
 import server.log.Logger;
-import server.rpc.TraderXmlRpcServer;
+import server.rpc.BrokerXmlRpcServer;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class Server {
 
         // run both cmdLine and RPC server in separate threads
         new AppServer(Server.appPort).start();
-        new TraderXmlRpcServer(Server.rpcPort).start();
+        new BrokerXmlRpcServer(Server.rpcPort).start();
 
         // infinite loop in order to avoid the server termination
         while (true);
@@ -162,7 +162,7 @@ public class Server {
     public static boolean isStockExists(String searchedStock)
     {
         try {
-            Stock.valueOf(searchedStock);
+            Stock.valueOf(searchedStock.toUpperCase());
         } catch (IllegalArgumentException e) {
             return false;
         }

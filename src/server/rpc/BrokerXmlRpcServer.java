@@ -9,11 +9,11 @@ import server.log.Logger;
 /**
  * Created by warlof on 02/03/2016.
  */
-public class TraderXmlRpcServer extends Thread {
+public class BrokerXmlRpcServer extends Thread {
 
     int port;
 
-    public TraderXmlRpcServer(int port)
+    public BrokerXmlRpcServer(int port)
     {
         this.port = port;
     }
