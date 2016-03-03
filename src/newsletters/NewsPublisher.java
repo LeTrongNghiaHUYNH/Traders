@@ -8,6 +8,8 @@ import server.log.Logger;
 
 import java.util.Random;
 
+import javax.jms.*;
+
 /**
  * Created by warlof on 02/03/2016.
  */
