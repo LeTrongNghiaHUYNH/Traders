@@ -2,6 +2,7 @@ package server.app;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 
@@ -44,36 +45,14 @@ public class AppService extends Thread {
 
 			while (connected) {
 				line = fromClient.readLine();
-				if (line.equals(".")) {
+				if (line == null || (line != null && line.equals("."))) {
 					connected = false;
+                    Logger.write(LogType.debug, String.format("Session from %s is over", user));
 				} else {
 					data = line.split(" ");
 					if (data.length != 4) {
 						if (data.length == 1 && data[0].equals("ls")) {
-							if (Server.users.size() > 0) {
-								String users = "Users:\n";
-								for (User user : Server.users) {
-									users += user.toString() + "\n";
-								}
-								Logger.write(LogType.notice, users);
-							}
-							
-							if (Server.asks.size() > 0) {
-								String asks = "Asks:\n";
-								for (Ask ask : Server.asks) {
-									asks += ask.toString() + "\n";
-								}
-								Logger.write(LogType.notice, asks);
-							}
-							
-							if (Server.bids.size() > 0) {
-								String bids = "Bids:\n";							
-								for (Bid bid : Server.bids) {
-									bids += bid.toString() + "\n";
-								}
-								Logger.write(LogType.notice, bids);
-							}
-							
+                            Server.listing();
 							toClient.writeBytes("End of the listing\n");
 						} else {
 							Logger.write(LogType.error, "There is no enough argument.");
@@ -89,15 +68,9 @@ public class AppService extends Thread {
 								price = Double.parseDouble(data[3]);
 								
 								if (type.equals("SELL")) {
-									Ask ask = new Ask(user, item, quantity, price);
-									Server.asks.add(ask);
-									Logger.write(LogType.notice, ask.toString());
-									toClient.writeBytes("Received: " + ask.toString() + '\n');
+                                    Server.addAsk(user, item, quantity, price, toClient);
 								} else { // BUY
-									Bid bid = new Bid(user, item, quantity, price);
-									Server.bids.add(bid);
-									Logger.write(LogType.notice, bid.toString());
-									toClient.writeBytes("Received: " + bid.toString() + '\n');
+                                    Server.addBid(user, item, quantity, price, toClient);
 								}
 								
 								Server.isMatched(item);
@@ -114,7 +87,7 @@ public class AppService extends Thread {
 			}
 			
 			fromClient.close();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			Logger.write(LogType.error, e.toString());
 		}
 	}

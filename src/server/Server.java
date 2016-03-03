@@ -10,6 +10,8 @@ import server.log.LogType;
 import server.log.Logger;
 import server.rpc.TraderXmlRpcServer;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -43,11 +45,20 @@ public class Server {
 	 * @param stock The stock about which the transaction is related
 	 * @param quantity The share quantity which are sold
 	 * @param price The amount of each share
+     * @param client The client stream if available
      */
-    public static void addAsk(User user, Stock stock, int quantity, double price) {
+    public static void addAsk(User user, Stock stock, int quantity, double price, DataOutputStream client) {
     	Ask ask = new Ask(user, stock, quantity, price);
     	asks.add(ask);
     	Logger.write(LogType.notice, ask.toString());
+
+        if (client != null) {
+            try {
+                client.writeBytes("Received: " + ask.toString() + '\n');
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -56,11 +67,47 @@ public class Server {
 	 * @param stock The stock about which the transaction is related
 	 * @param quantity The share quantity which are bought
 	 * @param price The amount of each share
+     * @param client The client stream if available
      */
-    public static void addBid(User user, Stock stock, int quantity, double price) {
+    public static void addBid(User user, Stock stock, int quantity, double price, DataOutputStream client) {
     	Bid bid = new Bid(user, stock, quantity, price);
     	bids.add(bid);
     	Logger.write(LogType.notice, bid.toString());
+
+        if (client != null) {
+            try {
+                client.writeBytes("Received: " + bid.toString() + '\n');
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void listing()
+    {
+        if (Server.users.size() > 0) {
+            String users = "Users:\n";
+            for (User user : Server.users) {
+                users += user.toString() + "\n";
+            }
+            Logger.write(LogType.debug, users);
+        }
+
+        if (Server.asks.size() > 0) {
+            String asks = "Asks:\n";
+            for (Ask ask : Server.asks) {
+                asks += ask.toString() + "\n";
+            }
+            Logger.write(LogType.debug, asks);
+        }
+
+        if (Server.bids.size() > 0) {
+            String bids = "Bids:\n";
+            for (Bid bid : Server.bids) {
+                bids += bid.toString() + "\n";
+            }
+            Logger.write(LogType.debug, bids);
+        }
     }
 
     /**

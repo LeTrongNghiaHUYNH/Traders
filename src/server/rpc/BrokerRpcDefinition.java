@@ -23,7 +23,7 @@ public class BrokerRpcDefinition {
     {
         if (Server.isStockExists(item)) {
             User user = new User(null, username);
-            Server.addAsk(user, Stock.valueOf(item), qty, price);
+            Server.addAsk(user, Stock.valueOf(item), qty, price, null);
 
             return true;
         }
@@ -43,7 +43,7 @@ public class BrokerRpcDefinition {
     {
         if (Server.isStockExists(item)) {
             User user = new User(null, username);
-            Server.addBid(user, Stock.valueOf(item), qty, price);
+            Server.addBid(user, Stock.valueOf(item), qty, price, null);
 
             return true;
         }
