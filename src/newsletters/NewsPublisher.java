@@ -3,12 +3,12 @@ package newsletters;
 import models.trade.Stock;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQTopic;
+import javax.jms.*;
+
 import server.log.LogType;
 import server.log.Logger;
 
 import java.util.Random;
-
-import javax.jms.*;
 
 /**
  * Created by warlof on 02/03/2016.

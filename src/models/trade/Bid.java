@@ -17,8 +17,7 @@ public class Bid extends AbstractTransaction
 
     public Bid(User user, Stock stock, int quantity, double price)
     {
-        super(user.getName(), stock, quantity, price);
-        this._owner = user;
+        super(user, stock, quantity, price);
 
         // control if the price is a top price
         // First, in order to avoid any kind of null exception, we check that the provided share codename

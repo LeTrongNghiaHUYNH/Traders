@@ -41,24 +41,13 @@ public abstract class AbstractTransaction implements Comparable
      */
     protected double _price;
 
-    protected AbstractTransaction(Stock stock, int quantity, double price)
+    protected AbstractTransaction(User user, Stock stock, int quantity, double price)
     {
         this._id = ++AbstractTransaction.ID;
         this._datetime = new Date();
 
-        this._owner = new User(null);
+        this._owner = user;
         this._stock = stock;
-        this._quantity = quantity;
-        this._price = price;
-    }
-    
-    protected AbstractTransaction(String name,Stock item, int quantity, double price)
-    {
-        this._id = ++AbstractTransaction.ID;
-        this._datetime = new Date();
-
-        this._owner = new User(null, name);
-        this._item = item;
         this._quantity = quantity;
         this._price = price;
     }
