@@ -36,23 +36,42 @@ public class Server {
         // infinite loop in order to avoid the server termination
         while (true);
     }
-    
-    public static void addAsk(User user, Stock item, int quantity, double price) {
-    	Ask ask = new Ask(user, item, quantity, price);
+
+    /**
+	 * Add an ask to the server list
+	 * @param user The user name
+	 * @param stock The stock about which the transaction is related
+	 * @param quantity The share quantity which are sold
+	 * @param price The amount of each share
+     */
+    public static void addAsk(User user, Stock stock, int quantity, double price) {
+    	Ask ask = new Ask(user, stock, quantity, price);
     	asks.add(ask);
     	Logger.write(LogType.notice, ask.toString());
     }
-    
-    public static void addBid(User user, Stock item, int quantity, double price) {
-    	Bid bid = new Bid(user, item, quantity, price);
+
+    /**
+	 * Add a bid to the server list
+	 * @param user The user name
+	 * @param stock The stock about which the transaction is related
+	 * @param quantity The share quantity which are bought
+	 * @param price The amount of each share
+     */
+    public static void addBid(User user, Stock stock, int quantity, double price) {
+    	Bid bid = new Bid(user, stock, quantity, price);
     	bids.add(bid);
     	Logger.write(LogType.notice, bid.toString());
     }
-    
-    public static boolean isMatched(Stock item) {
+
+    /**
+	 * Check if we have some matched bid/ask
+	 * @param stock The stock about which we want make the check
+	 * @return True if there is a match
+     */
+    public static boolean isMatched(Stock stock) {
     	Bid highestBid = null;
     	for (Bid bid : bids) {
-    		if (bid.getItem() == item) {
+    		if (bid.getStock() == stock) {
     			if (highestBid == null || bid.getPrice() > highestBid.getPrice()) {
     				highestBid = bid;
     			}
@@ -61,7 +80,7 @@ public class Server {
     	
     	Ask lowestAsk = null;
     	for (Ask ask : asks) {
-    		if (ask.getItem() == item) {
+    		if (ask.getStock() == stock) {
     			if (lowestAsk == null || ask.getPrice() < lowestAsk.getPrice()) {
     				lowestAsk = ask;
     			}

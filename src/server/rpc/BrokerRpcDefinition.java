@@ -9,8 +9,16 @@ import server.Server;
 /**
  * Created by elfaus on 02/03/2016.
  */
-public class XRPCDefinition {
+public class BrokerRpcDefinition {
 
+    /**
+     * Publish a method which enable us to send an ask to the Broker Service
+     * @param username The user name
+     * @param item The stock name
+     * @param qty The quantity of the share we're selling
+     * @param price The amount we're asking for each share
+     * @return True if the ask has been took by the server
+     */
     public boolean ask(String username, String item, int qty, double price)
     {
         if (Server.isStockExists(item)) {
@@ -23,6 +31,14 @@ public class XRPCDefinition {
         return false;
     }
 
+    /**
+     * Publish a method which enable us to send a bid to the Broker Service
+     * @param username The user name
+     * @param item The stock name
+     * @param qty The quantity of the share we're buying
+     * @param price The amount we're offering per share
+     * @return
+     */
     public boolean bid(String username, String item, int qty, double price)
     {
         if (Server.isStockExists(item)) {
@@ -35,6 +51,11 @@ public class XRPCDefinition {
         return false;
     }
 
+    /**
+     * Publish a method which enable us to get prices stats for a specific Stock
+     * @param stock The stock we're looking for
+     * @return The highest bid and the lowest ask
+     */
     public Double[] get(String stock) {
         double bid = 0.0;
         double ask = 0.0;

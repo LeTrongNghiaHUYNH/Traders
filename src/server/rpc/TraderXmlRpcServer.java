@@ -7,7 +7,7 @@ import server.log.LogType;
 import server.log.Logger;
 
 /**
- * Created by elfaus on 02/03/2016.
+ * Created by warlof on 02/03/2016.
  */
 public class TraderXmlRpcServer extends Thread {
 
@@ -22,17 +22,18 @@ public class TraderXmlRpcServer extends Thread {
     public void run()
     {
         try {
+            // create a new XML-RPC server on specified port
             WebServer webServer = new WebServer(port);
-
+            // map our interfaces to the XML-RPC service
             XmlRpcServer xmlRpcServer = webServer.getXmlRpcServer();
             PropertyHandlerMapping phm = new PropertyHandlerMapping();
-
-            phm.addHandler( "Prices", XRPCDefinition.class);
+            // we support BrokerRpcDefinition with Prices command
+            phm.addHandler( "Prices", BrokerRpcDefinition.class);
             xmlRpcServer.setHandlerMapping(phm);
-
+            // start our XML-RPC service
             webServer.start();
+            // log the event
             Logger.write(LogType.notice, "Multithreaded RPC starts on Port " + port);
-
         } catch (Exception exception) {
             Logger.write(LogType.error, "RPC Server error: " + exception);
         }

@@ -2,7 +2,6 @@ package models.trade;
 
 import models.user.User;
 
-import java.text.SimpleDateFormat;
 import java.util.Hashtable;
 
 /**
@@ -15,9 +14,9 @@ public class Bid extends AbstractTransaction
      */
     private static Hashtable<Stock, Bid> HIGHESTOFFER = new Hashtable<Stock, Bid>();
 
-    public Bid(User user, Stock item, int quantity, double price)
+    public Bid(User user, Stock stock, int quantity, double price)
     {
-        super(item, quantity, price);
+        super(stock, quantity, price);
         this._owner = user;
 
         // control if the price is a top price
@@ -25,24 +24,24 @@ public class Bid extends AbstractTransaction
         // exists.
         // Then we compared both recorded price and provided price
         // Finally, we update the price if it's suitable
-        if (Bid.HIGHESTOFFER.containsKey(this._item)) {
-            if (this._price > Bid.HIGHESTOFFER.get(this._item)._price) {
-                Bid.HIGHESTOFFER.put(this._item, this);
+        if (Bid.HIGHESTOFFER.containsKey(this._stock)) {
+            if (this._price > Bid.HIGHESTOFFER.get(this._stock)._price) {
+                Bid.HIGHESTOFFER.put(this._stock, this);
             }
         } else {
-            Bid.HIGHESTOFFER.put(this._item, this);
+            Bid.HIGHESTOFFER.put(this._stock, this);
         }
     }
 
     /**
      * Return the highest record for a specified share codename
-     * @param item The share codename
+     * @param stock The stock about which the transaction is related
      * @return The highest record
      */
-    public static Bid getHighestOffer(Stock item)
+    public static Bid getHighestOffer(Stock stock)
     {
-        if (Bid.HIGHESTOFFER.containsKey(item)) {
-            return Bid.HIGHESTOFFER.get(item);
+        if (Bid.HIGHESTOFFER.containsKey(stock)) {
+            return Bid.HIGHESTOFFER.get(stock);
         }
 
         return null;

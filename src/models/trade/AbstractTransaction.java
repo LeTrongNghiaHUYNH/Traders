@@ -29,11 +29,11 @@ public abstract class AbstractTransaction implements Comparable
      */
     protected User _owner;
     /**
-     * The item about which the transaction is related
+     * The stock about which the transaction is related
      */
-    protected Stock _item;
+    protected Stock _stock;
     /**
-     * The amount of item which are concerned by the transaction
+     * The amount of share which are concerned by the transaction
      */
     protected int _quantity;
     /**
@@ -41,13 +41,13 @@ public abstract class AbstractTransaction implements Comparable
      */
     protected double _price;
 
-    protected AbstractTransaction(Stock item, int quantity, double price)
+    protected AbstractTransaction(Stock stock, int quantity, double price)
     {
         this._id = ++AbstractTransaction.ID;
         this._datetime = new Date();
 
         this._owner = new User(null);
-        this._item = item;
+        this._stock = stock;
         this._quantity = quantity;
         this._price = price;
     }
@@ -63,7 +63,7 @@ public abstract class AbstractTransaction implements Comparable
 
     /**
      * Get the transaction quantity
-     * @return the current transaction item quantity buy or sell
+     * @return the current transaction share quantity buy or sell
      */
     public int getQuantity()
     {
@@ -72,7 +72,7 @@ public abstract class AbstractTransaction implements Comparable
 
     /**
      * Get the transaction price
-     * @return the current transaction price per item
+     * @return the current transaction price per share
      */
     public double getPrice()
     {
@@ -89,11 +89,11 @@ public abstract class AbstractTransaction implements Comparable
     }
     
     /**
-     * Get the item
-     * @return the name of the item like MSFT AAPL etc
+     * Get the stock
+     * @return the name of the stock like MSFT AAPL etc
      */
-    public Stock getItem() {
-    	return this._item;
+    public Stock getStock() {
+    	return this._stock;
     }
 
     /**
@@ -115,7 +115,7 @@ public abstract class AbstractTransaction implements Comparable
     /**
      * Provide a string formatted as following :
      * 2016/02/29 [18:35:07] | [BUY/SELL] (Warlof) > Apple 55 30.07
-     * @return year/month/day [hours:minutes:seconds] | [BUY] (username) > item quantity price
+     * @return year/month/day [hours:minutes:seconds] | [BUY] (username) > stock quantity price
      */
     @Override
     public String toString()
@@ -123,13 +123,13 @@ public abstract class AbstractTransaction implements Comparable
         if (this instanceof Ask) {
             return String.format("[SELL] (%s) > %s %d %.2f",
                     this._owner.getName(),
-                    this._item,
+                    this._stock,
                     this._quantity,
                     this._price);
         } else if (this instanceof Bid) {
             return String.format("[BUY] (%s) > %s %d %.2f",
                     this._owner.getName(),
-                    this._item,
+                    this._stock,
                     this._quantity,
                     this._price);
         } else {
@@ -149,13 +149,13 @@ public abstract class AbstractTransaction implements Comparable
         if (this instanceof Ask) {
             return String.format("SELL,%s,%s,%d,%.2f",
                     this._owner.getName(),
-                    this._item,
+                    this._stock,
                     this._quantity,
                     this._price);
         } else if (this instanceof Bid) {
             return String.format("BUY,%s,%s,%d,%.2f",
                     this._owner.getName(),
-                    this._item,
+                    this._stock,
                     this._quantity,
                     this._price);
         } else {

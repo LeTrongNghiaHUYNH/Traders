@@ -1,7 +1,7 @@
 package models.trade;
 
 import models.user.User;
-import java.text.SimpleDateFormat;
+
 import java.util.Hashtable;
 
 /**
@@ -14,9 +14,9 @@ public class Ask extends AbstractTransaction
      */
     private static Hashtable<Stock, Ask> LOWESTOFFER = new Hashtable<Stock, Ask>();
 
-    public Ask(User user, Stock item, int quantity, double price)
+    public Ask(User user, Stock stock, int quantity, double price)
     {
-        super(item, quantity, price);
+        super(stock, quantity, price);
         this._owner = user;
 
         // control if the price is a top price
@@ -24,24 +24,24 @@ public class Ask extends AbstractTransaction
         // exists.
         // Then we compared both recorded price and provided price
         // Finally, we update the price if it's suitable
-        if (Ask.LOWESTOFFER.containsKey(this._item)) {
-            if (this._price < Ask.LOWESTOFFER.get(this._item)._price) {
-                Ask.LOWESTOFFER.put(this._item, this);
+        if (Ask.LOWESTOFFER.containsKey(this._stock)) {
+            if (this._price < Ask.LOWESTOFFER.get(this._stock)._price) {
+                Ask.LOWESTOFFER.put(this._stock, this);
             }
         } else {
-            Ask.LOWESTOFFER.put(this._item, this);
+            Ask.LOWESTOFFER.put(this._stock, this);
         }
     }
 
     /**
      * Return the lowest record for the specified share codename
-     * @param item The share codename
+     * @param stock The stock about which the transaction is related
      * @return The lowest record
      */
-    public static Ask getLowestOffer(Stock item)
+    public static Ask getLowestOffer(Stock stock)
     {
-        if (Ask.LOWESTOFFER.containsKey(item)) {
-            return Ask.LOWESTOFFER.get(item);
+        if (Ask.LOWESTOFFER.containsKey(stock)) {
+            return Ask.LOWESTOFFER.get(stock);
         }
 
         return null;
