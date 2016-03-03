@@ -3,6 +3,7 @@ package client;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
@@ -15,6 +16,8 @@ public class ClientInterface extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 
+	private static Client client;
+
 	JPanel jp = new JPanel(new BorderLayout());
 	JPanel jp1 = new JPanel();
 	JPanel jp2 = new JPanel();
@@ -25,8 +28,8 @@ public class ClientInterface extends JFrame implements ActionListener {
 	JLabel jlb2 = new JLabel("Quantité:");
 	JLabel jlb3 = new JLabel("Prix:");
 	JLabel jlb4 = new JLabel("Action:");
-	
-	JTextArea jta = new JTextArea(3,30);
+
+	static JTextArea jta = new JTextArea(5,40);
 	JTextField jtf1 = new JTextField(5);
 	JTextField jtf2 = new JTextField(5);
 	JRadioButton jrb1 = new JRadioButton("SELL");
@@ -50,9 +53,23 @@ public class ClientInterface extends JFrame implements ActionListener {
 		jf.setFocusTraversalKeysEnabled(false);
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+		jf.addWindowListener(new java.awt.event.WindowAdapter() {
+			public void windowClosing(WindowEvent winEvt) {
+				try {
+					jta.setText(jta.getText() + "Aplication is closing... \n");
+					jta.update(jta.getGraphics());
+
+					client.stop();
+
+					Thread.sleep(500);
+					System.exit(0);
+				} catch (IOException | InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
 		client.init();
-		client.start();
-		client.stop();
 	}
 
 	public ClientInterface(String string) {
@@ -95,7 +112,6 @@ public class ClientInterface extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == jb) {
-			//TODO: get parameter and send it to server
 			String request = "";
 			
 			if(jrb1.isSelected()) {
@@ -103,13 +119,19 @@ public class ClientInterface extends JFrame implements ActionListener {
 			} else {
 				request = "BUY ";
 			}
-			
+
+			//add parameters
 			request += jcb.getSelectedItem() + " ";
 			request += jtf1.getText() + " ";
 			request += jtf2.getText();
-			
+
+			try {
+				String response = Client.contactServer(request);
+				jta.setText(jta.getText() + response);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 			System.out.println(request);
-			//jta.setText(jta.getText() + '\n' + "Enter message for the Server, or end the session with . :");
 		}
 	}
 }
