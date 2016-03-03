@@ -20,6 +20,11 @@ public class Bid extends AbstractTransaction
         super(user.getName(), item, quantity, price);
         this._owner = user;
 
+        // control if the price is a top price
+        // First, in order to avoid any kind of null exception, we check that the provided share codename
+        // exists.
+        // Then we compared both recorded price and provided price
+        // Finally, we update the price if it's suitable
         if (Bid.HIGHESTOFFER.containsKey(this._item)) {
             if (this._price > Bid.HIGHESTOFFER.get(this._item)._price) {
                 Bid.HIGHESTOFFER.put(this._item, this);

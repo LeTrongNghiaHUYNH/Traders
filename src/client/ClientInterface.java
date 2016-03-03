@@ -11,7 +11,6 @@ import javax.swing.*;
 
 import models.trade.Stock;
 
-
 public class ClientInterface extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
