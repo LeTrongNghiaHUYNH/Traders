@@ -133,6 +133,7 @@ public class ClientInterface extends JFrame implements ActionListener {
 			request += jtf2.getText();
 
 			try {
+                CliDummyClient.contactServer("hello " + cliDummyClient.getUser().getName());
 				String response = CliDummyClient.contactServer(request);
 				jta.setText(jta.getText() + response);
 			} catch (IOException e1) {

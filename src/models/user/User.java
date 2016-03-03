@@ -77,6 +77,15 @@ public class User
     }
 
     /**
+     * Enable to modify the current user name
+     * @param name the new user name
+     */
+    public void setName(String name)
+    {
+        this._name = name;
+    }
+
+    /**
      * Provide a string formatted as following :
      * [127.0.0.1:22503] Warlof (666)
      * @return [userAddress:userPort] username (userid)

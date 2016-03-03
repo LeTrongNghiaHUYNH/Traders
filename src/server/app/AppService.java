@@ -49,40 +49,50 @@ public class AppService extends Thread {
 					connected = false;
                     Logger.write(LogType.debug, String.format("Session from %s is over", user));
 				} else {
-					data = line.split(" ");
-					if (data.length != 4) {
-						if (data.length == 1 && data[0].equals("ls")) {
-                            Server.listing();
-							toClient.writeBytes("End of the listing\n");
-						} else {
-							Logger.write(LogType.error, "There is no enough argument.");
-							toClient.writeBytes("There is no enough argument.\n");
-						}
-					} else {
-						type = data[0].toUpperCase();
-						if (type.equals("BUY") || type.equals("SELL")) {
+                    if (line.startsWith("hello")) {
+                        data = line.split(" ");
+                        if (data[1] != null) {
+                            this.user.setName(data[1]);
+                            Logger.write(LogType.debug, String.format("New authentification from %s",
+                                    this.user));
+                            toClient.writeBytes("hello brocker\n");
+                        }
+                    } else {
+                        data = line.split(" ");
+                        if (data.length != 4) {
+                            if (data.length == 1 && data[0].equals("ls")) {
+                                Server.listing();
+                                toClient.writeBytes("End of the listing\n");
+                            } else {
+                                Logger.write(LogType.error, "There is no enough argument.");
+                                toClient.writeBytes("There is no enough argument.\n");
+                            }
+                        } else {
+                            type = data[0].toUpperCase();
+                            if (type.equals("BUY") || type.equals("SELL")) {
 
-							if (Server.isStockExists(data[1])) {
-                                item = Stock.valueOf(data[1].toUpperCase());
-								quantity = Integer.parseInt(data[2]);
-								price = Double.parseDouble(data[3]);
-								
-								if (type.equals("SELL")) {
-                                    Server.addAsk(user, item, quantity, price, toClient);
-								} else { // BUY
-                                    Server.addBid(user, item, quantity, price, toClient);
-								}
-								
-								Server.isMatched(item);
-							} else {
-								Logger.write(LogType.error, "This item is not saleable.");
-								toClient.writeBytes("This item is not saleable.\n");
-							}
-						} else {
-							Logger.write(LogType.error, "It's not a BUY or SELL command.");
-							toClient.writeBytes("It's not a BUY or SELL command.\n");
-						}
-					}
+                                if (Server.isStockExists(data[1])) {
+                                    item = Stock.valueOf(data[1].toUpperCase());
+                                    quantity = Integer.parseInt(data[2]);
+                                    price = Double.parseDouble(data[3]);
+
+                                    if (type.equals("SELL")) {
+                                        Server.addAsk(user, item, quantity, price, toClient);
+                                    } else { // BUY
+                                        Server.addBid(user, item, quantity, price, toClient);
+                                    }
+
+                                    Server.isMatched(item);
+                                } else {
+                                    Logger.write(LogType.error, "This item is not saleable.");
+                                    toClient.writeBytes("This item is not saleable.\n");
+                                }
+                            } else {
+                                Logger.write(LogType.error, "It's not a BUY or SELL command.");
+                                toClient.writeBytes("It's not a BUY or SELL command.\n");
+                            }
+                        }
+                    }
 				}
 			}
 			
