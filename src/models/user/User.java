@@ -78,8 +78,8 @@ public class User
 
     /**
      * Provide a string formatted as following :
-     * [127.0.0.1:22503] Warlof 666
-     * @return [userAddress:userPort] username userid
+     * [127.0.0.1:22503] Warlof (666)
+     * @return [userAddress:userPort] username (userid)
      */
     @Override
     public String toString()

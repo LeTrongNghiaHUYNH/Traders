@@ -33,15 +33,15 @@ public class Client {
 		user = new User(new Socket(url, port), name);
 	}
 
-	 public static void main(String[] args) throws Exception {
-		 Client client = new Client();
-		 client.init();
-		 client.start();
-		 client.stop();
-	 }
-	
+	public static void main(String[] args) throws Exception {
+		Client client = new Client();
+		client.init();
+		client.start();
+		client.stop();
+	}
 	
 	public void init() throws UnknownHostException, IOException {
+        // prepare data stream/buffer which will be use by the socket
 	    toServer = new DataOutputStream( user.getSocket().getOutputStream() );
 	    fromServer = new BufferedReader( new InputStreamReader(user.getSocket().getInputStream()) );
 	    stdIn = new BufferedReader(new InputStreamReader(System.in));
@@ -92,49 +92,70 @@ public class Client {
 		return "Recieve from server: " + new String(fromServer.readLine());
 	}
 
+    /**
+     * Manage the client as a bot which send random ask/bid for a random quantity/amount on random stock
+     * @throws IOException
+     */
     public static void bot() throws IOException
     {
         Random random = new Random();
-        int action = random.nextInt(2);
-        int stock = random.nextInt(4);
-        int quantity = random.nextInt(99999);
-        double price = random.nextDouble() * random.nextInt(999);
-        String sAction;
-        String sStock = "";
+        int action = random.nextInt(2); // we can have to kind of action : BUY or SELL
+        int stock = random.nextInt(4); // we can have 4 kind of stock
+        int quantity = random.nextInt(99998) + 1; // generate a random quantity between 1 and 99999
+        double price = random.nextDouble() * (random.nextInt(998) + 1); // generate a random amount between 1.00 and 999.99
 
-        if (action == 1) {
-            sAction = "BUY";
-        } else {
-            sAction = "SELL";
-        }
-
-        switch (stock){
-            case 0:
-                sStock = Stock.AAPL.toString();
-                break;
-            case 1:
-                sStock = Stock.IBM.toString();
-                break;
-            case 2:
-                sStock = Stock.MSFT.toString();
-                break;
-            case 3:
-                sStock = Stock.ORCL.toString();
-                break;
-        }
-
+        // prepare the transaction which will be made by the bot
+        // force the number used format to be ENGLISH decimal instead user locale format
         line = String.format(Locale.ENGLISH, "%s %s %d %.2f",
-                sAction,
-                sStock,
+                getAction(action),
+                getStock(stock),
                 quantity,
                 price);
 
+        // send the transaction the the server
         toServer.writeBytes( line + '\n' );
         try {
-            Thread.sleep(1000);
+            // our trader is tired, wait 10 seconds
+            Thread.sleep(10000);
         } catch (InterruptedException e) {
             System.out.println("The bot is becoming crazy ! " + e);
         }
+    }
+
+    /**
+     * Able to find a specific Stock name based on a random id
+     * @param stockId The enum value rank
+     * @return The stock value if it was a suitable id, an empty string if the id doesn't match
+     */
+    private static String getStock(int stockId)
+    {
+        switch (stockId){
+            case 0:
+                return Stock.AAPL.toString();
+            case 1:
+                return Stock.IBM.toString();
+            case 2:
+                return Stock.MSFT.toString();
+            case 3:
+                return Stock.ORCL.toString();
+            default:
+                return "";
+        }
+    }
+
+    /**
+     * Return a string based on the action ID
+     * @param action The action id for which we want the String value
+     *               1 mean BUY
+     *               other mean SELL
+     * @return BUY or SELL
+     */
+    private static String getAction(int action)
+    {
+        if (action == 1)
+            return "BUY";
+
+        return "SELL";
     }
 
 	/** getters **/

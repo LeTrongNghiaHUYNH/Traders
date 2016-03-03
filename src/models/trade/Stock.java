@@ -1,11 +1,12 @@
 package models.trade;
 
 /**
- * Created by elfaus on 02/03/2016.
+ * Created by warlof on 02/03/2016.
+ * Provide an enum for available Stock (valid share codename)
  */
 public enum Stock {
-    AAPL,
-    IBM,
-    MSFT,
-    ORCL
+    AAPL,   // Apple
+    IBM,    // IBM
+    MSFT,   // Microsoft
+    ORCL    // Oracle Corporations
 }

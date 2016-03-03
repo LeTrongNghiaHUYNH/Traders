@@ -139,6 +139,11 @@ public abstract class AbstractTransaction implements Comparable
         }
     }
 
+    /**
+     * Return a CSV formatted string based on the current transaction as following :
+     * SELL,Warlof,IBM,25,364.12
+     * @return formatted CSV string
+     */
     public String toCsv()
     {
         if (this instanceof Ask) {
