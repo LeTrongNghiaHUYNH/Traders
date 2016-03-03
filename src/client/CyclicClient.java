@@ -1,18 +1,21 @@
 package client;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.io.*;
+import java.net.*;
 import java.util.Locale;
 import java.util.Random;
 
+import javax.jms.*;
+
+import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.command.ActiveMQTopic;
+
+import models.trade.Ask;
+import models.trade.Bid;
 import models.trade.Stock;
 import models.user.User;
 
-public class CliDummyClient {
+public class CyclicClient {
 	
 	protected User user;
 	
@@ -21,24 +24,80 @@ public class CliDummyClient {
 	private static DataOutputStream toServer;
 	private static BufferedReader stdIn;
 	
-	public CliDummyClient() throws UnknownHostException, IOException {
+	public CyclicClient() throws UnknownHostException, IOException {
 		user = new User(new Socket("localhost", 9495));
 	}	
 	
-	public CliDummyClient(String name) throws UnknownHostException, IOException {
+	public CyclicClient(String name) throws UnknownHostException, IOException {
 		user = new User(new Socket("localhost", 9495), name);
 	}
 	
-	public CliDummyClient(String url, int port) throws UnknownHostException, IOException {
+	public CyclicClient(String url, int port) throws UnknownHostException, IOException {
 		user = new User(new Socket(url, port));
 	}
 	
-	public CliDummyClient(String url, int port, String name) throws UnknownHostException, IOException {
+	public CyclicClient(String url, int port, String name) throws UnknownHostException, IOException {
 		user = new User(new Socket(url, port), name);
 	}
 
 	public static void main(String[] args) throws Exception {
-		CliDummyClient client = new CliDummyClient();
+		Thread t = new Thread() {
+			public void run() {
+				try {
+					String user = env("ACTIVEMQ_USER", "admin");
+			        String password = env("ACTIVEMQ_PASSWORD", "password");
+			        String host = env("ACTIVEMQ_HOST", "localhost");
+			        int port = Integer.parseInt(env("ACTIVEMQ_PORT", "61616"));
+			        String destination = "event";
+			        
+			        ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory("tcp://" + host + ":" + port);
+
+			        Connection connection = factory.createConnection(user, password);
+			        connection.start();
+			        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+			        Destination dest = new ActiveMQTopic(destination);
+			        MessageConsumer consumer = session.createConsumer(dest);
+			        
+			        while (true) {
+			        	Message msg = consumer.receive();
+			        	if (msg instanceof TextMessage) {
+			        		TextMessage textmsg = (TextMessage)msg;
+			        		
+			        		if (!textmsg.getText().equals("SHUTDOWN")) {
+			            		String body = textmsg.getText();
+			            		String kindOfNews = textmsg.getStringProperty("kindOfNews");
+			            		String stock = textmsg.getStringProperty("stock");
+			            		
+			            		System.out.println("\nFROM NewsPublisher: " + body);
+			            		
+			            		if ("bad".equals(kindOfNews)) {
+			            			Ask lowestOffer = Ask.getLowestOffer(Stock.valueOf(stock));
+			            			double price = lowestOffer == null ? 100 : lowestOffer.getPrice();
+			            			line = "SELL " + stock + " 500 " + price;
+			            	        toServer.writeBytes(line + '\n');
+			            	        receiveResponse();
+			            		} else if ("good".equals(kindOfNews)) {
+			            			Bid highestBid = Bid.getHighestOffer(Stock.valueOf(stock));
+			            			double price = highestBid == null ? 100 : highestBid.getPrice();
+			            			line = "BUY " + stock + " 500 " + price;
+			            			toServer.writeBytes(line + '\n');
+			            	        receiveResponse();
+			            		}
+				        		System.out.print("Enter message for the Server, or end the session with . : ");
+			        		}
+
+			        		
+			        	}
+			        }
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		
+		t.start();		
+		
+		CyclicClient client = new CyclicClient();
 		client.init();
 		client.start();
 		client.stop();
@@ -171,4 +230,11 @@ public class CliDummyClient {
 	public void setUser(User usr) {
 		user = usr;
 	}
+	
+    private static String env(String key, String defaultValue) {
+        String rc = System.getenv(key);
+        if( rc== null )
+            return defaultValue;
+        return rc;
+    }
 }

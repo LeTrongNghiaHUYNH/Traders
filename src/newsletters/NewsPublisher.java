@@ -44,7 +44,7 @@ public class NewsPublisher {
             // send our journalist to the coffee machine
             // maybe he's looking for new kind of news too
             try {
-                Thread.sleep(20000); // wait for 10 minutes
+                Thread.sleep(5000); // wait for 10 minutes
             } catch (InterruptedException e) {
                 System.out.println("Our journalist is sick :( " + e);
             }
@@ -80,6 +80,12 @@ public class NewsPublisher {
         msg.setIntProperty("id", ++ID);
         // the stock is the stock about which is our news related to
         msg.setStringProperty("stock", getStockName(kindOfStock));
+        // the kind of news
+        if (kindOfNews == 1) {
+            msg.setStringProperty("kindOfNews", "bad");
+        } else {
+            msg.setStringProperty("kindOfNews", "good");
+        }
         // send our news to the MQ daemon
         producer.send(msg);
         producer.send(session.createTextMessage("SHUTDOWN"));
