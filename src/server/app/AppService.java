@@ -51,11 +51,16 @@ public class AppService extends Thread {
 				} else {
                     if (line.startsWith("hello")) {
                         data = line.split(" ");
-                        if (data[1] != null) {
+                        if (data.length >= 2) {
                             this.user.setName(data[1]);
                             Logger.write(LogType.debug, String.format("New authentification from %s",
                                     this.user));
                             toClient.writeBytes("hello brocker\n");
+                        } else {
+                            Logger.write(LogType.warning, String.format("Authentication failure from %s. Unknown user.",
+                                    this.user));
+                            toClient.writeBytes(String.format("unknown user, you're %s\n",
+                                    this.user.getName()));
                         }
                     } else {
                         data = line.split(" ");
