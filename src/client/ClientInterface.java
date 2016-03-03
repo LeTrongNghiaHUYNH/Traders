@@ -22,7 +22,7 @@ public class ClientInterface extends JFrame implements ActionListener {
 	JPanel jp3 = new JPanel();
 
 	JLabel jlb1 = new JLabel("Stock:");
-	JLabel jlb2 = new JLabel("Quantité:");
+	JLabel jlb2 = new JLabel("QuantitÃ©:");
 	JLabel jlb3 = new JLabel("Prix:");
 	JLabel jlb4 = new JLabel("Action:");
 	
