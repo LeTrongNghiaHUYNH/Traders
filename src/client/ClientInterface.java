@@ -44,8 +44,17 @@ public class ClientInterface extends JFrame implements ActionListener {
 	public static void main(String[] args) throws UnknownHostException, IOException  {
 
 		JFrame jf = new ClientInterface("Client Interface");
-		client = new Client();
 
+		String name = JOptionPane.showInputDialog(jf, "Username? (empty for anonymous)", "Client connection", JOptionPane.QUESTION_MESSAGE);
+
+		if(name.equals("")) {
+			client = new Client(name);
+			jta.setText("Connecting to server in anonymous mode ...\n");
+		} else {
+			client = new Client(name);
+			jta.setText("Connecting to server with username: " + name + "...\n");
+		}	
+		
 		jf.setResizable(false);
 		jf.pack();
 		jf.setLocationRelativeTo(null);
