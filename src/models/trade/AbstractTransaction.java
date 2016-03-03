@@ -1,8 +1,6 @@
 package models.trade;
 
 import models.user.User;
-import server.log.LogType;
-import server.log.Logger;
 
 import java.util.Date;
 
@@ -133,8 +131,6 @@ public abstract class AbstractTransaction implements Comparable
                     this._quantity,
                     this._price);
         } else {
-            Logger.write(LogType.error, String.format("Unable to parse the object as String : unrecognized instance of %s",
-                    ((AbstractTransaction) this).getClass().getName()));
             return "";
         }
     }
@@ -159,8 +155,6 @@ public abstract class AbstractTransaction implements Comparable
                     this._quantity,
                     this._price);
         } else {
-            Logger.write(LogType.error, String.format("Unable to parse the object as CSV : unrecognized instance of %s",
-                    ((AbstractTransaction) this).getClass().getName()));
             return "";
         }
     }
