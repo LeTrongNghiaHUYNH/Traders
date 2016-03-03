@@ -2,6 +2,7 @@ package models.trade;
 
 import models.user.User;
 
+import java.text.SimpleDateFormat;
 import java.util.Hashtable;
 
 /**
@@ -16,7 +17,7 @@ public class Bid extends AbstractTransaction
 
     public Bid(User user, Stock stock, int quantity, double price)
     {
-        super(stock, quantity, price);
+        super(user.getName(), stock, quantity, price);
         this._owner = user;
 
         // control if the price is a top price
