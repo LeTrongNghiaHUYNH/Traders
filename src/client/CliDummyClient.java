@@ -21,12 +21,16 @@ public class CliDummyClient {
 	private static DataOutputStream toServer;
 	private static BufferedReader stdIn;
 	
+	// IP and port of the server
+	private static String serverIPAddress = "localhost";
+	private static int serverPort = 9495;
+	
 	public CliDummyClient() throws UnknownHostException, IOException {
-		user = new User(new Socket("localhost", 9495));
+		user = new User(new Socket(serverIPAddress, serverPort));
 	}	
 	
 	public CliDummyClient(String name) throws UnknownHostException, IOException {
-		user = new User(new Socket("localhost", 9495), name);
+		user = new User(new Socket(serverIPAddress, serverPort), name);
 	}
 	
 	public CliDummyClient(String url, int port) throws UnknownHostException, IOException {
@@ -38,7 +42,20 @@ public class CliDummyClient {
 	}
 
 	public static void main(String[] args) throws Exception {
-		CliDummyClient client = new CliDummyClient();
+		
+		AcyclicClient client;
+		if (args.length > 0) {
+			try {
+				String host = args[0];
+				int port = Integer.parseInt(args[1]);
+				client = new AcyclicClient(host, port);
+			} catch (Exception e) {
+				client = new AcyclicClient();
+			}
+		} else {
+			client = new AcyclicClient();
+		}
+		
 		client.init();
 		client.start();
 		client.stop();

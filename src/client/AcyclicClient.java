@@ -29,12 +29,20 @@ public class AcyclicClient {
 	private static DataOutputStream toServer;
 	private static BufferedReader stdIn;
 	
+	// IP and port of the server
+	private static String serverIPAddress = "localhost";
+	private static int serverPort = 9495;
+	
+	// IP and port of the publisher
+	private static String activeMQAddress = "141.100.45.102";
+	private static String activeMQPort = "61616";
+	
 	public AcyclicClient() throws UnknownHostException, IOException {
-		user = new User(new Socket("localhost", 9495));
+		user = new User(new Socket(serverIPAddress, serverPort));
 	}	
 	
 	public AcyclicClient(String name) throws UnknownHostException, IOException {
-		user = new User(new Socket("localhost", 9495), name);
+		user = new User(new Socket(serverIPAddress, serverPort), name);
 	}
 	
 	public AcyclicClient(String url, int port) throws UnknownHostException, IOException {
@@ -51,8 +59,8 @@ public class AcyclicClient {
 				try {
 					String user = env("ACTIVEMQ_USER", "admin");
 			        String password = env("ACTIVEMQ_PASSWORD", "password");
-			        String host = env("ACTIVEMQ_HOST", "localhost");
-			        int port = Integer.parseInt(env("ACTIVEMQ_PORT", "61616"));
+			        String host = env("ACTIVEMQ_HOST", activeMQAddress);
+			        int port = Integer.parseInt(env("ACTIVEMQ_PORT", activeMQPort));
 			        String destination = "event";
 			        
 			        ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory("tcp://" + host + ":" + port);
@@ -72,22 +80,25 @@ public class AcyclicClient {
 			            		String body = textmsg.getText();
 			            		String kindOfNews = textmsg.getStringProperty("kindOfNews");
 			            		String stock = textmsg.getStringProperty("stock");
+			            		Random random = new Random();
+			            		double randomPrice = random.nextDouble() * (random.nextInt(998) + 1);
 			            		
 			            		System.out.println("\nFROM NewsPublisher: " + body);
 			            		
 			            		if ("good".equals(kindOfNews)) {
 			            			Ask lowestOffer = Ask.getLowestOffer(Stock.valueOf(stock));
-			            			double price = lowestOffer == null ? 100 : lowestOffer.getPrice();
+			            			double price = lowestOffer == null ? randomPrice : lowestOffer.getPrice();
 			            			line = "SELL " + stock + " 500 " + price;
 			            	        toServer.writeBytes(line + '\n');
 			            	        receiveResponse();
 			            		} else if ("bad".equals(kindOfNews)) {
 			            			Bid highestBid = Bid.getHighestOffer(Stock.valueOf(stock));
-			            			double price = highestBid == null ? 100 : highestBid.getPrice();
+			            			double price = highestBid == null ? randomPrice : highestBid.getPrice();
 			            			line = "BUY " + stock + " 500 " + price;
 			            			toServer.writeBytes(line + '\n');
 			            	        receiveResponse();
 			            		}
+			            		
 				        		System.out.print("Enter message for the Server, or end the session with . : ");
 			        		}
 
@@ -102,7 +113,19 @@ public class AcyclicClient {
 		
 		t.start();
 		
-		AcyclicClient client = new AcyclicClient();
+		AcyclicClient client;
+		if (args.length > 0) {
+			try {
+				String host = args[0];
+				int port = Integer.parseInt(args[1]);
+				client = new AcyclicClient(host, port);
+			} catch (Exception e) {
+				client = new AcyclicClient();
+			}
+		} else {
+			client = new AcyclicClient();
+		}
+
 		client.init();
 		client.start();
 		client.stop();

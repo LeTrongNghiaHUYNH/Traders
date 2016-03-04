@@ -22,13 +22,34 @@ public class NewsPublisher {
     private static String host;
     private static int port;
     private static String destination;
+    
+    private static String activeMQAddress = "localhost";
+    private static String activeMQPort = "61616";
+    private static int delayBetweenNews = 2000; // in ms
 
     public static void main(String args[]) throws JMSException
     {
+    	// If one arg  => it's the IP Address
+    	// If two args => it's the IP Address and port
+    	// If there is an exception (wrong IP address, port not number, etc) we use the default values
+    	try {
+			if (args.length == 1) {
+				host = env("ACTIVEMQ_HOST", args[0]);
+				port = Integer.parseInt(env("ACTIVEMQ_PORT", activeMQPort));
+			} else if (args.length == 2) {
+				host = env("ACTIVEMQ_HOST", args[0]);
+				port = Integer.parseInt(env("ACTIVEMQ_PORT", args[1]));
+			} else {
+		        host = env("ACTIVEMQ_HOST", activeMQAddress);
+		        port = Integer.parseInt(env("ACTIVEMQ_PORT", activeMQPort));
+			}
+    	} catch (Exception e) {
+	        host = env("ACTIVEMQ_HOST", activeMQAddress);
+	        port = Integer.parseInt(env("ACTIVEMQ_PORT", activeMQPort));
+    	}
+    		
         user = env("ACTIVEMQ_USER", "admin");
         password = env("ACTIVEMQ_PASSWORD", "password");
-        host = env("ACTIVEMQ_HOST", "localhost");
-        port = Integer.parseInt(env("ACTIVEMQ_PORT", "61616"));
         destination = arg(args, 0, "event");
 
         while (true) {
@@ -44,7 +65,7 @@ public class NewsPublisher {
             // send our journalist to the coffee machine
             // maybe he's looking for new kind of news too
             try {
-                Thread.sleep(5000); // wait for 10 minutes
+                Thread.sleep(delayBetweenNews); // wait for 10 minutes
             } catch (InterruptedException e) {
                 System.out.println("Our journalist is sick :( " + e);
             }

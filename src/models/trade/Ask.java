@@ -46,4 +46,11 @@ public class Ask extends AbstractTransaction
         return null;
     }
 
+    public static String displayLowestOffers() {
+    	String res = "[" + Ask.LOWESTOFFER.size() + "] ";
+    	for (Stock stock : Ask.LOWESTOFFER.keySet()) {
+    		res += stock + " [" + Ask.LOWESTOFFER.get(stock) + "]\n";
+    	}
+    	return res;
+    }
 }
