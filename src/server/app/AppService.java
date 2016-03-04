@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.Random;
 
 import models.trade.Ask;
 import models.trade.Bid;
@@ -82,8 +82,24 @@ public class AppService extends Thread {
                                     price = Double.parseDouble(data[3]);
 
                                     if (type.equals("SELL")) {
+                                    	if (price == -1) {
+                                    		if (Ask.getLowestOffer(item) == null) {
+                                    			Random random = new Random();
+                                    			price = random.nextDouble() * (random.nextInt(998) + 1);
+                                    		} else {
+                                    			price = Ask.getLowestOffer(item).getPrice();
+                                    		}
+                                    	}
                                         Server.addAsk(user, item, quantity, price, toClient);
                                     } else { // BUY
+                                    	if (price == -1) {
+                                    		if (Bid.getHighestOffer(item) == null) {
+                                    			Random random = new Random();
+                                    			price = random.nextDouble() * (random.nextInt(998) + 1);
+                                    		} else {
+                                    			price = Bid.getHighestOffer(item).getPrice();
+                                    		}
+                                    	}
                                         Server.addBid(user, item, quantity, price, toClient);
                                     }
 

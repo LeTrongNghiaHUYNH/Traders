@@ -1,17 +1,24 @@
 package client;
 
-import java.io.*;
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Locale;
 import java.util.Random;
 
-import javax.jms.*;
+import javax.jms.Connection;
+import javax.jms.Destination;
+import javax.jms.Message;
+import javax.jms.MessageConsumer;
+import javax.jms.Session;
+import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQTopic;
 
-import models.trade.Ask;
-import models.trade.Bid;
 import models.trade.Stock;
 import models.user.User;
 
@@ -75,28 +82,20 @@ public class CyclicClient {
 			            		String body = textmsg.getText();
 			            		String kindOfNews = textmsg.getStringProperty("kindOfNews");
 			            		String stock = textmsg.getStringProperty("stock");
-			            		Random random = new Random();
-			            		double randomPrice = random.nextDouble() * (random.nextInt(998) + 1);
 			            		
 			            		System.out.println("\nFROM NewsPublisher: " + body);
 			            		
 			            		if ("bad".equals(kindOfNews)) {
-			            			Ask lowestOffer = Ask.getLowestOffer(Stock.valueOf(stock));
-			            			double price = lowestOffer == null ? randomPrice : lowestOffer.getPrice();
-			            			line = "SELL " + stock + " 500 " + price;
+			            			line = "SELL " + stock + " 500 -1";
 			            	        toServer.writeBytes(line + '\n');
 			            	        receiveResponse();
 			            		} else if ("good".equals(kindOfNews)) {
-			            			Bid highestBid = Bid.getHighestOffer(Stock.valueOf(stock));
-			            			double price = highestBid == null ? randomPrice : highestBid.getPrice();
-			            			line = "BUY " + stock + " 500 " + price;
+			            			line = "BUY " + stock + " 500 -1";
 			            			toServer.writeBytes(line + '\n');
 			            	        receiveResponse();
 			            		}
 				        		System.out.print("Enter message for the Server, or end the session with . : ");
 			        		}
-
-			        		
 			        	}
 			        }
 				} catch (Exception e) {
@@ -107,17 +106,17 @@ public class CyclicClient {
 		
 		t.start();		
 		
-		AcyclicClient client;
+		CyclicClient client;
 		if (args.length > 0) {
 			try {
 				String host = args[0];
 				int port = Integer.parseInt(args[1]);
-				client = new AcyclicClient(host, port);
+				client = new CyclicClient(host, port);
 			} catch (Exception e) {
-				client = new AcyclicClient();
+				client = new CyclicClient();
 			}
 		} else {
-			client = new AcyclicClient();
+			client = new CyclicClient();
 		}
 
 		client.init();
